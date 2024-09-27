@@ -3,18 +3,23 @@ project:
   output-dir: docs
 
 website:
-  title: "bgrazda.github.io"
+  title: "Brooke Grazda"
   navbar:
     left:
       - href: index.qmd
         text: Home
       - about.qmd
+      - href: resources.qmd
+        text: Resources
 
 format:
   html:
-    theme: cosmo
+    theme: 
+      light: lux
+      dark: cyborg
     css: styles.css
     toc: true
+    page-layout: full
 
-editor: visual
+
 
