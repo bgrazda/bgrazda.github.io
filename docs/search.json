@@ -4,7 +4,7 @@
     "href": "about.html",
     "title": "About",
     "section": "",
-    "text": "About this site\n\n1 + 1\n\n[1] 2"
+    "text": "some text goes here"
   },
   {
     "objectID": "index.html",
@@ -12,5 +12,26 @@
     "title": "Brooke Grazda",
     "section": "",
     "text": "Brooke Grazda graduated from UC Santa Barbara with a Bachelor of Arts in Environmental Studies and a minor in Applied Psychology. After taking interdisciplinary coursework in food, water, and energy, Brooke became passionate about environmental problem solving and natural resource conservation. During undergrad, she worked for the Institute of Energy Efficiency (IEE) at UCSB as an administrative and marketing assistant. At IEE, Brooke became increasingly fascinated by the importance of science communication in combating the climate crisis. She later implemented these skills abroad in Costa Rica when she studied tropical biology and conservation and created an independent research project. Her project in Costa Rica analyzed the threatened behaviors of reef fish and was a catalyst for Brooke’s interest in environmental data science. Upon the completion of her degree, Brooke worked in her hometown as an environmental educator at a local nonprofit, I Love A Clean San Diego. Here, she resonated deeply with their mission of waste reduction, outreach, and conservation.\nBrooke is committed to use data driven solutions to educate the public and effectively manage natural resources. She is currently an Environmental Resources Management Intern at the County of Santa Barbara Public Works Department working in Resource Recovery and Waste Management. Her long term goals are to use data science as a tool to preserve coastal resources and advocate for environmental justice."
+  },
+  {
+    "objectID": "delete-later/practice.html",
+    "href": "delete-later/practice.html",
+    "title": "Here is my level one header",
+    "section": "",
+    "text": "Here is my level one header\nHere is my first paragraph\nHere is my second paragraph, where you can read more about MEDS.\nThis is very important text!"
+  },
+  {
+    "objectID": "about.html#what-i-do-for-work",
+    "href": "about.html#what-i-do-for-work",
+    "title": "About",
+    "section": "",
+    "text": "some text goes here"
+  },
+  {
+    "objectID": "about.html#what-i-do-for-fun",
+    "href": "about.html#what-i-do-for-fun",
+    "title": "About",
+    "section": "What I do for fun",
+    "text": "What I do for fun\n\nHAVE FUN\n\nhere is some more text\n\nTesting my centered text"
   }
 ]

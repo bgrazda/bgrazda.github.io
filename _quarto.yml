@@ -5,19 +5,21 @@ project:
 website:
   title: "Brooke Grazda"
   navbar:
+    logo: images/my-temp-logo.jpg
     left:
       - href: index.qmd
         text: Home
       - about.qmd
       - href: resources.qmd
         text: Resources
-
+  page-footer:
+    background: light
+    left: Copyright 2024, Brooke Grazda
+    right: This website is built with {{ <i class="fa-brands fa-github-alt"></i>}}
 format:
   html:
-    theme: 
-      light: lux
-      dark: cyborg
-    css: styles.css
+    theme: styles.scss
+    mainfont: Frank Ruhl Libre
     toc: true
     page-layout: full
 

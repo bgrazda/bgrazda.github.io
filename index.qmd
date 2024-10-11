@@ -7,12 +7,17 @@ about:
   image-width: 17em
   links:
     - text: LinkedIn
+      icon: linkedin
       href: https://www.linkedin.com/in/brooke-grazda-a02248217/
     - text: GitHub
       href: https://github.com/bgrazda
+      icon: github
     - text: Email
+      icon: envelope
       href: mailto:bgrazda@bren.ucsb.edu
----
+    - text: Resume
+ 
+---    
 
 Brooke Grazda graduated from UC Santa Barbara with a Bachelor of Arts in Environmental Studies and a minor in Applied Psychology. After taking interdisciplinary coursework in food, water, and energy, Brooke became passionate about environmental problem solving and natural resource conservation. During undergrad, she worked for the Institute of Energy Efficiency (IEE) at UCSB as an administrative and marketing assistant. At IEE, Brooke became increasingly fascinated by the importance of science communication in combating the climate crisis. She later implemented these skills abroad in Costa Rica when she studied tropical biology and conservation and created an independent research project. Her project in Costa Rica analyzed the threatened behaviors of reef fish and was a catalyst for Brooke’s interest in environmental data science. Upon the completion of her degree, Brooke worked in her hometown as an environmental educator at a local nonprofit, I Love A Clean San Diego. Here, she resonated deeply with their mission of waste reduction, outreach, and conservation. 
 

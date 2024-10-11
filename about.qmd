@@ -2,8 +2,22 @@
 title: "About"
 ---
 
-About this site
+## What I do for work
 
-```{r}
-1 + 1
-```
+some text goes here
+
+
+## What I do for fun
+  <p class="plum-text center-text">HAVE FUN<p>
+  
+  [here is some more text]{.plum-text}
+  
+  
+::: {.center-text}
+  
+  Testing my centered text
+  
+:::
+  
+  
+  
