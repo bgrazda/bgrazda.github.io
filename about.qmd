@@ -1,23 +1,37 @@
 ---
 title: "About"
+image: sierpe-view.jpg
+about:
+  template: jolla
+  image-shape: rectangle
+  image-width: 20em
 ---
 
-## What I do for work
+## What inspires me
 
-some text goes here
+Nature, community, and collaboration. I possess a growth mindset to develop practical solutions through a unique approach involving outreach, education, data analysis, and science communication. I believe in reaching beyond barriers and connection to foster productive learning environments. 
+
+## What I'm working on
+
+I'm working locally to achieve SB 1383 goals in the unincorporated Santa Barbara County while completing my Master's degree. In my academics, I am working on geospatial analyses, statistics, and visualization for environmental data.
+
+Previously, I was an environmental educator for a nonprofit in San Diego, delivering presentations and assemblies to students of all ages. These presentations covered topics such as watershed pollution prevention, the role of sea otters within kelp forest ecosystems, food waste, and household hazardous waste. 
+
+## What is SB 1383?
+
+California State Bill 1383 calls for a 75% reduction statewide in disposal of organic waste by 2025. I work for the County of Santa Barbara Public Works Department in the Resource Recovery and Waste Management Division, working to meet these goals. SB 1383 also madates that 20% of disposed edible food be recovered by 2025. This means all hands on deck! Counties across the state are working to divert organic waste through green bins, recycled food programs, educational presentations in schools, and much, much, more. 
 
 
-## What I do for fun
-  <p class="plum-text center-text">HAVE FUN<p>
+Business, residents, and waste haulers are all doing our part to divert our organic waste. Find out more [here](https://lessismore.org/).
+
   
-  [here is some more text]{.plum-text}
+  <img style="float: center" width="300" height="300" src="colorado-hike.jpg"/>
   
   
-::: {.center-text}
+
   
-  Testing my centered text
+
   
-:::
   
   
   
