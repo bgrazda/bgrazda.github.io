@@ -1,0 +1,76 @@
+/*-- scss:defaults --*/
+
+// font
+@import url('https://fonts.googleapis.com/css2?family=Cabin:ital,wght@0,400..700;1,400..700&display=swap');
+//Cabin 
+@import url('https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@300..900&display=swap'); 
+// Frank Ruhl Libre
+@import url('https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@300..900&family=Slabo+27px&display=swap');
+//Slabo
+// Colors 
+
+$mint-green: #42977d;
+$egg: #edebeb;
+$pinky: #DF928E;
+$black :#202A25;
+$plum: #824C71;
+$raisinblack: #221D23;
+$columbia-blue: #C0E8F9;
+$light-blue: #B8D3D1;
+$nyanza: #DAF7DC;
+$paynes-gray: #586F7C;
+$ghost-white: #F4F4F9;
+$charcol: #2F4550;
+
+
+
+
+// quarto sass variables
+$body-bg: $ghost-white;
+$navbar-bg: $egg;
+$navbar-fg: $paynes-gray;
+$navbar-hl: $plum;
+$footer-bg: $light-blue;
+
+/*-- scss:rules --*/
+
+
+h1, h2 {
+  letter-spacing: 5px;
+  font-weight: 800;
+}
+
+
+.title{
+  color: $raisinblack;
+}
+
+.center-text {
+  text-align: center;
+}
+
+.plum-text {
+  color: $plum;
+}
+
+.slabo-27px-regular {
+  font-family: "Slabo 27px", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+// Create font variables
+
+$slabo: "slabo-27px-regular", serif;
+
+
+
+h1, h2, h3, h4, h5, h6{
+  ont-family: "Slabo 27px", serif;
+}
+
+
+.navbar-brand img {
+  max-height: 100px;
+  width: auto;
+}
