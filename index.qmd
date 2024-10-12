@@ -1,10 +1,10 @@
 ---
 title: "Brooke Grazda"
-image: brooke_headshot.jpeg
+image: images/SB-BG-headshot.jpg
 about: 
   template: trestles
-  image-shape: rounded
-  image-width: 17em
+  image-shape: round
+  image-width: 19em
   links:
     - text: LinkedIn
       icon: linkedin
@@ -18,7 +18,14 @@ about:
     - text: Resume
 ---    
 
+Hi! My name is Brooke Grazda. I am a San Diego native currently based in Santa Barbara, California. I am an environmental data science focused on using programming tools to help inform efficacy of policy. Keep reading for a little bit more about me!
 
-Brooke Grazda graduated from UC Santa Barbara with a Bachelor of Arts in Environmental Studies and a minor in Applied Psychology. After taking interdisciplinary coursework in food, water, and energy, Brooke became passionate about environmental problem solving and natural resource conservation. During undergrad, she worked for the Institute of Energy Efficiency (IEE) at UCSB as an administrative and marketing assistant. At IEE, Brooke became increasingly fascinated by the importance of science communication in combating the climate crisis. She later implemented these skills abroad in Costa Rica when she studied tropical biology and conservation and created an independent research project. Her project in Costa Rica analyzed the threatened behaviors of reef fish and was a catalyst for Brooke’s interest in environmental data science. Upon the completion of her degree, Brooke worked in her hometown as an environmental educator at a local nonprofit, I Love A Clean San Diego. Here, she resonated deeply with their mission of waste reduction, outreach, and conservation. 
+I am currently a Masters of Environmental Data Science student at the Bren School of Environmental Science & Management. Previously, I graduated from UC Santa Barbara (UCSB) with a Bachelor of Arts in Environmental Studies and a minor in Applied Psychology. While taking interdisciplinary courseowrk in food, water, and energy, I struggled to narrow down my interests into one singular niche. Rather, I understood that I was passionate about applying technical skills to environmental problem solving to effectively manage natural resources. 
 
-Brooke is committed to use data driven solutions to educate the public and effectively manage natural resources. She is currently an Environmental Resources Management Intern at the County of Santa Barbara Public Works Department working in Resource Recovery and Waste Management. Her long term goals are to use data science as a tool to preserve coastal resources and advocate for environmental justice.
+During my undergrad, I worked at the Institute for Energy Efficiency (IEE) at UCSB as an administrative and marketing student assistant. At IEE, I became fascinated by all the different applications of STEM research to increase energy efficiency. The importance of science communication in combating the climate crisis stood out to me significantly. I was curious to figure out ways to bridge the gap between technical science jargon and the general public's understanding of environmental solutions. In many instances, data science seemed to be my answer.
+
+I was fortunate to study abroad in Costa Rica, where I studied tropical biology and conservation with an independent research project component. My research project collected and analyzed the threatened behaviors of reef fish located in the Cuajiniquil Bay, and was a catalyst for pursuing environmental data science. 
+
+Prior to starting my graduate program, I worked in my hometown as an environmental educator at a local nonprofit, I Love A Clean San Diego. Here, I resonated deeply with their mission of waste reduction, outreach, and conservation. 
+
+I am committed to use data driven solutions to educate the public and effectively manage natural resources. I am currently an Environmental Resources Management Intern at the County of Santa Barbara Public Works Department in the Resource Recovery & Waste Management Division. My long term goals are to use data science as a tool to inform policy and advocate for environmental justice.
