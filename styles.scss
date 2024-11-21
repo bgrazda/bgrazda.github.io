@@ -21,6 +21,13 @@ $nyanza: #DAF7DC;
 $paynes-gray: #586F7C;
 $ghost-white: #F4F4F9;
 $charcol: #2F4550;
+$lemon :#F4F1BB;
+$licorice: #230903;
+$periwinkle: #CDC7E5;
+$lapis: #376996;
+$current: #28666E;
+$gunmental: #223843;
+$antiflash: #EFF1F3;
 
 
 
@@ -28,9 +35,10 @@ $charcol: #2F4550;
 // quarto sass variables
 $body-bg: $ghost-white;
 $navbar-bg: $egg;
-$navbar-fg: $paynes-gray;
-$navbar-hl: $plum;
-$footer-bg: $light-blue;
+$navbar-fg: $licorice;
+$navbar-hl: $mint-green;
+$footer-bg: $paynes-gray;
+
 
 /*-- scss:rules --*/
 
@@ -38,15 +46,16 @@ $footer-bg: $light-blue;
 h1, h2 {
   letter-spacing: 5px;
   font-weight: 800;
+  color: $raisinblack;
 }
-
 
 .title{
   color: $raisinblack;
 }
 
 .center-text {
-  text-align: center;
+  color: $raisinblack;
+  text-align: center; 
 }
 
 .plum-text {
