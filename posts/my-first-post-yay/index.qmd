@@ -1,0 +1,40 @@
+---
+title: "blog post title"
+description: "a short catchy description of the blog post"
+author:
+  - name: Brooke Grazda
+    url: https://samanthacsik.github.io/
+    affiliation: MEDS
+    affiliation-url: https://bren.ucsb.edu/masters-programs/master-environmental-data-science
+date: 2024-10-18
+categories: [Quarto, MEDS]
+toc: true
+bibliography: references.bib
+image: ilacsd-cleanup.png
+citation: 
+  url: https://bgrazda.github.io/posts/my-first-post-yay
+draft: true
+draft-mode: visible
+---
+
+## This is my first section
+
+I'm going to insert a footnote here[^1]
+
+[^1]: Here is a new footnote
+
+## This is my second
+
+Here's my next paragraph[^2]
+
+[^2]: Here is my second footnote
+
+I'm citing Miss Sam Csik[@csik2022]
+
+Here is more random text. I'm going to cite a journal article now[@gaynor2022].
+
+
+```{r}
+knitr::include_graphics('taylor-cat.jpg')
+```
+

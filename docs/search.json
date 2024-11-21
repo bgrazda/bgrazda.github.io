@@ -1,10 +1,24 @@
 [
   {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Brooke Grazda",
+    "section": "",
+    "text": "Hi! My name is Brooke Grazda. I am a San Diego native currently based in Santa Barbara, California. I am an environmental data scientist focused on using programming tools to help inform the efficacy of environmental policy. Keep reading for a little bit more about me!\nI am currently a Masters of Environmental Data Science student at the Bren School of Environmental Science & Management. Previously, I graduated from UC Santa Barbara (UCSB) with a Bachelor of Arts in Environmental Studies and a minor in Applied Psychology. While taking interdisciplinary coursework in food, water, and energy, I struggled to narrow down my interests into one singular niche. Rather, I understood that I was passionate about applying technical skills to environmental problem solving with natural resources.\nDuring my undergrad, I worked at the Institute for Energy Efficiency (IEE) at UCSB as an administrative and marketing student assistant. At IEE, I became fascinated by all the different applications of STEM research to increase energy efficiency. The importance of science communication in combating the climate crisis stood out to me significantly. I was curious to figure out ways to bridge the gap between technical science jargon and the general public’s understanding of environmental solutions. In many instances, data science seemed to be my answer.\nI studied tropical biology and conservation while abroad in Costa Rica, and conducted an independent research project. My research project collected and analyzed the threatened behaviors of reef fish located in the Cuajiniquil Bay, and was a catalyst for pursuing environmental data science.\nPrior to starting my graduate program, I worked in my hometown as an environmental educator at a local nonprofit, I Love A Clean San Diego. Here, I resonated deeply with their mission of waste reduction, outreach, and conservation.\nI am committed to use data driven solutions to educate the public and effectively manage natural resources. I am currently an Environmental Resources Management Intern at the County of Santa Barbara Public Works Department in the Resource Recovery & Waste Management Division. My long term goals are to use data science as a tool to inform policy and advocate for environmental justice. Check out some of my projects!"
+  },
+  {
     "objectID": "delete-later/practice.html",
     "href": "delete-later/practice.html",
     "title": "Here is my level one header",
     "section": "",
     "text": "Here is my level one header\nHere is my first paragraph\nHere is my second paragraph, where you can read more about MEDS.\nThis is very important text!"
+  },
+  {
+    "objectID": "posts.html",
+    "href": "posts.html",
+    "title": "Blog",
+    "section": "",
+    "text": "No matching items"
   },
   {
     "objectID": "about.html",
@@ -33,12 +47,5 @@
     "title": "About",
     "section": "What is SB 1383?",
     "text": "What is SB 1383?\nCalifornia State Bill 1383 calls for a 75% reduction statewide in disposal of organic waste by 2025. I work for the County of Santa Barbara Public Works Department in the Resource Recovery and Waste Management Division, working to meet these goals. SB 1383 also madates that 20% of disposed edible food be recovered by 2025. This means all hands on deck! Counties across the state are working to divert organic waste through green bins, recycled food programs, educational presentations in schools, and much, much, more.\nBusiness, residents, and waste haulers are all doing our part to divert our organic waste. Find out more here."
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Brooke Grazda",
-    "section": "",
-    "text": "Hi! My name is Brooke Grazda. I am a San Diego native currently based in Santa Barbara, California. I am an environmental data scientist focused on using programming tools to help inform the efficacy of environmental policy. Keep reading for a little bit more about me!\nI am currently a Masters of Environmental Data Science student at the Bren School of Environmental Science & Management. Previously, I graduated from UC Santa Barbara (UCSB) with a Bachelor of Arts in Environmental Studies and a minor in Applied Psychology. While taking interdisciplinary coursework in food, water, and energy, I struggled to narrow down my interests into one singular niche. Rather, I understood that I was passionate about applying technical skills to environmental problem solving with natural resources.\nDuring my undergrad, I worked at the Institute for Energy Efficiency (IEE) at UCSB as an administrative and marketing student assistant. At IEE, I became fascinated by all the different applications of STEM research to increase energy efficiency. The importance of science communication in combating the climate crisis stood out to me significantly. I was curious to figure out ways to bridge the gap between technical science jargon and the general public’s understanding of environmental solutions. In many instances, data science seemed to be my answer.\nI was fortunate to study abroad in Costa Rica, where I studied tropical biology and conservation with an independent research project component. My research project collected and analyzed the threatened behaviors of reef fish located in the Cuajiniquil Bay, and was a catalyst for pursuing environmental data science.\nPrior to starting my graduate program, I worked in my hometown as an environmental educator at a local nonprofit, I Love A Clean San Diego. Here, I resonated deeply with their mission of waste reduction, outreach, and conservation.\nI am committed to use data driven solutions to educate the public and effectively manage natural resources. I am currently an Environmental Resources Management Intern at the County of Santa Barbara Public Works Department in the Resource Recovery & Waste Management Division. My long term goals are to use data science as a tool to inform policy and advocate for environmental justice."
   }
 ]
