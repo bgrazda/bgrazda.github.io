@@ -1,5 +1,5 @@
 ---
-title: "Hydrogen Potential in the United States"
+title: "Green Hydrogen Potential in the United States"
 author: 'Brooke Grazda'
 format: html
 editor: visual
