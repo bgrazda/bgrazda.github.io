@@ -1,0 +1,15 @@
+{
+  "hash": "e3222689f5b38336816fa3449cfbfa08",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"blog post title\"\ndescription: \"a short catchy description of the blog post\"\nauthor:\n  - name: Brooke Grazda\n    url: https://samanthacsik.github.io/\n    affiliation: MEDS\n    affiliation-url: https://bren.ucsb.edu/masters-programs/master-environmental-data-science\ndate: 2024-10-18\ncategories: [Quarto, MEDS]\ntoc: true\nbibliography: references.bib\nimage: ilacsd-cleanup.png\ncitation: \n  url: https://bgrazda.github.io/posts/my-first-post-yay\ndraft: true\ndraft-mode: visible\n---\n\n\n## This is my first section\n\nI'm going to insert a footnote here[^1]\n\n[^1]: Here is a new footnote\n\n## This is my second\n\nHere's my next paragraph[^2]\n\n[^2]: Here is my second footnote\n\nI'm citing Miss Sam Csik[@csik2022]\n\nHere is more random text. I'm going to cite a journal article now[@gaynor2022].\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nknitr::include_graphics('taylor-cat.jpg')\n```\n\n::: {.cell-output-display}\n![](taylor-cat.jpg){width=621}\n:::\n:::\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}
