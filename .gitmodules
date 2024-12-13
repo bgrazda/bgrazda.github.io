@@ -1,0 +1,4 @@
+[submodule "stats-final-project"]
+    path = posts/stats-final-copy
+    url = git://https://github.com/bgrazda/stats-final
+
