@@ -19,7 +19,7 @@ Puns aside, I have always been fascinated with Arctic (even before I adopted Isl
 I began with the question: how has Arctic sea ice changed in the last 40 years? This is a very broad question, and there are likely innumerable different pathways to which this question could be answered. Using the NOAA database, I came across a zip file that had so much data on sea ice extent, going all the way back to 1980. I also found a supplementary dataset from the NSF Arctic Data Center on arctic permafrost active layer thickness. The goal of my visualization was to not only answer this question, but tell a visually pleasing, data-driven story about climate change. I was only just dipping my toes in this data, and it was just the tip of the iceberg.
 
 ## Infographic
-![Infographic: Breaking the Ice - Data Visualizations on sea ice extent and permafrost active layer](arctic_infographic.png)
+![Infographic: Breaking the Ice - Data Visualizations on sea ice extent and permafrost active layer](breaking_the_ice_infographic.png)
 
 ## The Process
 While I am no expert in arctic data, I sure did have fun making these visualizations! My dataset from NOAA came with monthly images of the arctic circle, so I turned it into a gif using the following code and attached it to the top of this blog post.
