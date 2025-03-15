@@ -1,0 +1,306 @@
+---
+title: "Dataset spatial adds"
+author: "Anna Talucci"
+date: "2024-01-31"
+output: html_document
+---
+
+```{r clear environment, include=FALSE}
+rm(list=ls())
+```
+
+
+# Overview
+
+Add spatial data at the plot level and join plot level spatial adds to raw data. Spatial adds include ecozone and biome from [Resolve Ecoregions](https://hub.arcgis.com/datasets/37ea320eebb647c6838c23f72abae5ef/explore) and permafrost extent.
+
+# Packages
+
+```{r}
+library(tidyverse)
+library(sf)
+library(rnaturalearth)
+library(rnaturalearthdata)
+library(RColorBrewer)
+library(cowplot)
+library(ggpubr)
+library(ggnewscale)
+```
+
+# Projection
+[Some projection info]https://nsidc.org/data/user-resources/help-center/guide-nsidcs-polar-stereographic-projection)
+
+```{r}
+polarProj = "+proj=stere +lat_0=90 +lat_ts=70 +lon_0=-45 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs +type=crs"
+```
+
+# Data
+
+## Dataset
+```{r}
+raw = read_csv("../outputs/dataset/FireAltEstimated.csv")
+```
+
+```{r}
+plots = read_csv("../outputs/dataset/FireAltEstimatedPlotLevel.csv")
+```
+
+```{r}
+plots
+```
+
+## Spatial Data
+
+### Resolve Ecozones
+
+```{r}
+resolve = st_read("../data/spatialData/RESOLVE_Ecoregions_and_Biomes/Biomes_and_Ecoregions_2017.shp", "Biomes_and_Ecoregions_2017")
+```
+
+```{r}
+resolve
+```
+
+### Permafrost
+
+```{r}
+permafrost = st_read("../data/spatialData/permafrost/permaice.shp", "permaice")
+```
+
+```{r}
+permafrost
+```
+
+# Spatial processing
+
+## Create Spatial points
+
+```{r}
+plots
+```
+
+### Function to make points
+```{r}
+df_to_sf <- function(x){
+  st_as_sf(x, coords = c("lon","lat"), crs = 4326, remove = FALSE)
+}
+```
+
+```{r}
+( plotsPts = plots %>% 
+    df_to_sf() )
+```
+
+
+## Spatial Joins 
+
+### Select Resolve ecozones
+
+```{r}
+( resTunBor = resolve %>% 
+    filter(REALM %in% c("Palearctic", "Nearctic")) %>% 
+    dplyr::select(OBJECTID, ECO_NAME, BIOME_NUM, BIOME_NAME, REALM, ECO_ID, geometry) %>% 
+    filter(BIOME_NUM %in% c(11, 6)) %>%
+    rename(resId = OBJECTID, resName=ECO_NAME, resBiomNm = BIOME_NUM, resBiome = BIOME_NAME, resRealm = REALM,  resEcoId = ECO_ID)
+)
+```
+
+### Join pts to ecozones
+
+```{r}
+resPtplots = st_join(plotsPts, resTunBor) 
+```
+
+
+```{r}
+resPtplots
+```
+
+### Reproject to permafrost projection
+
+```{r}
+resPtplots_prj = st_transform(resPtplots, crs=st_crs(permafrost))
+```
+
+
+
+```{r}
+resPtplots_prj
+```
+
+### Join points to permafrost
+
+```{r}
+permResPtplots = st_join(resPtplots_prj, permafrost) 
+```
+
+```{r}
+permResPtplots
+```
+
+
+### Rename Columns
+
+```{r}
+( permResPtPlotsRename = permResPtplots %>% 
+  rename(permaExtent= EXTENT) %>%
+    select(submitNm:n, resName, resBiome, permaExtent, geometry))
+```
+
+
+
+### Reproject to WGS
+
+```{r}
+permResPtPlots_Wgs = st_transform(permResPtPlotsRename, crs=4326)
+```
+
+
+
+```{r}
+permResPtPlots_Wgs
+```
+
+# Data checks
+
+```{r}
+unique(permResPtPlots_Wgs$submitNm)
+```
+```{r}
+sort(unique(permResPtPlots_Wgs$resName))
+```
+
+
+
+```{r}
+permResPtPlots_Wgs %>% filter(resName == "Arctic coastal tundra")
+permResPtPlots_Wgs %>% filter(siteId == "Jones Old Burn") # checking for mismatched ecozone by pair
+permResPtPlots_Wgs %>% filter(submitNm == "Diaz") # checking for mismatched biome by pair/plot observers designation
+permResPtPlots_Wgs %>% filter(submitNm == "O'Donnell") # checking for mismatched biome by pair/plot observers designation
+permResPtPlots_Wgs %>% filter(submitNm == "Natali") # checking for mismatched biome by pair/plot observers designation
+```
+
+
+
+## Reassignment based on field observations and plot mismatches
+
+Reassignments are based on discrepancies between field observations a spatial joins. All reassignments were examined on a map. All reassignments were adjacent to polygon boundaries. Reassignments weight field observations higher than spatial joins. Additionally, reassignments are crucial for paired burned/unburned aggregates.
+
+### WOB FireId
+
+```{r}
+permResPtPlots_Wgs$resName[permResPtPlots_Wgs$fireId == "WOB"] <- "Arctic foothills tundra"
+# convert the 200 pts showing up as Arctic Coastal Tundra to Arctic Foothills Tundra due to pairing; inspected on map to make this decision
+```
+
+```{r}
+permResPtPlots_Wgs %>% filter(siteId == "Jones Old Burn")
+```
+
+### Diaz submitNm
+
+```{r}
+permResPtPlots_Wgs %>% filter(submitNm=="Diaz") %>% arrange(siteId)
+```
+
+```{r}
+permResPtPlots_Wgs$resName[permResPtPlots_Wgs$fireId == "PN6K"] <- "Beringia lowland tundra"
+permResPtPlots_Wgs$resBiomeName[permResPtPlots_Wgs$fireId == "PN6K"] <- "Tundra"
+permResPtPlots_Wgs %>% filter(submitNm=="Diaz")
+```
+### O'Donnell SubmitNm
+
+Interior Alaska-Yukon lowland taiga
+
+```{r}
+permResPtPlots_Wgs %>% filter(submitNm=="O'Donnell") %>% arrange(siteId)
+```
+
+```{r}
+permResPtPlots_Wgs$resName[permResPtPlots_Wgs$submitNm == "O'Donnell"] <- "Interior Alaska-Yukon lowland taiga"
+permResPtPlots_Wgs$resBiomeName[permResPtPlots_Wgs$submitNm == "O'Donnell"] <- "Boreal Forests/Taiga"
+permResPtPlots_Wgs %>% filter(submitNm=="O'Donnell")
+```
+## Natali
+
+```{r}
+permResPtPlots_Wgs %>% filter(submitNm=="Natali") %>% arrange(siteId)
+```
+Interior Alaska-Yukon lowland taiga
+"NCB_NEW" "NCB_OLD" "NCU_NEW" "NCU_OLD"
+```{r}
+permResPtPlots_Wgs$resName[permResPtPlots_Wgs$siteId == "NCB_NEW"] <- "Interior Alaska-Yukon lowland taiga"
+permResPtPlots_Wgs$resBiomeName[permResPtPlots_Wgs$siteId == "NCB_NEW"] <- "Boreal Forests/Taiga"
+permResPtPlots_Wgs$resName[permResPtPlots_Wgs$siteId == "NCB_OLD"] <- "Interior Alaska-Yukon lowland taiga"
+permResPtPlots_Wgs$resBiomeName[permResPtPlots_Wgs$siteId == "NCB_OLD"] <- "Boreal Forests/Taiga"
+permResPtPlots_Wgs$resName[permResPtPlots_Wgs$siteId == "NCU_NEW"] <- "Interior Alaska-Yukon lowland taiga"
+permResPtPlots_Wgs$resBiomeName[permResPtPlots_Wgs$siteId == "NCU_NEW"] <- "Boreal Forests/Taiga"
+permResPtPlots_Wgs$resName[permResPtPlots_Wgs$siteId == "NCU_OLD"] <- "Interior Alaska-Yukon lowland taiga"
+permResPtPlots_Wgs$resBiomeName[permResPtPlots_Wgs$siteId == "NCU_OLD"] <- "Boreal Forests/Taiga"
+
+permResPtPlots_Wgs %>% filter(submitNm=="Natali")
+```
+
+### Rechecks
+
+```{r}
+sort(unique(permResPtPlots_Wgs$resName))
+```
+# Dataframe drop geometry
+
+```{r}
+plots = permResPtPlots_Wgs %>% st_drop_geometry() %>% select(-resBiomeName)
+```
+
+```{r}
+names(plots)
+```
+
+```{r}
+plots
+```
+
+# Save files
+
+## write to csv
+
+```{r}
+write.csv(plots, file = "../outputs/dataset/2025-02-04_FireAltEstimatedPlotLevel.csv", row.names=FALSE)
+```
+
+# Join ecozone and permafrost to raw measurments
+
+```{r}
+plots
+```
+```{r}
+( plotsJoin = plots %>% 
+    dplyr::select(submitNm, siteId, plotId, distur, fireYr, fireId, year, paired, resName, resBiome, permaExtent, tsf, tsfClass)
+)
+```
+
+```{r}
+( rawData = raw %>% 
+    full_join(., plotsJoin, by=c("submitNm", "siteId", "plotId", "distur", "fireYr", "fireId", "year", "paired")) %>%
+    dplyr::select(submitNm, lastNm, plotId:cntryId, lat:msrDepth, estDoy, estDepth, tsf, tsfClass, resName:permaExtent ))
+```
+
+
+# Data checks
+
+```{r}
+names(rawData)
+```
+
+```{r}
+unique(rawData$submitNm)
+```
+```{r}
+sort(unique(rawData$resName))
+```
+
+# write to csv
+
+```{r}
+write.csv(rawData, file = "../outputs/dataset/2025-02-04_FireAltEstimatedRawData.csv", row.names=FALSE)
+```

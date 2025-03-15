@@ -1,0 +1,335 @@
+---
+title: "ERA5CleanData"
+author: "Anna Talucci"
+date: "2024-02-13"
+output: html_document
+---
+
+```{r clear environment, include=FALSE}
+rm(list=ls())
+```
+
+# Overview
+
+This script takes extracted ERA5-Land data by year from Google Earth Engine for each raw measurement then reorganizes to for temperature and day of year (DOY) to estimate ALT.
+
+# Packages
+
+```{r}
+library(tidyverse)
+library(lubridate)
+library(sf)
+library(data.table)
+```
+
+
+
+# Data
+
+## vector of data files
+```{r}
+f <- list.files(path = "../data/ERA5DataEE20250128/",
+                pattern = "*.csv", full.names = TRUE)
+```
+
+```{r}
+f
+```
+
+## Individual files
+```{r}
+f2001 <- read.csv(f[1], header = TRUE) 
+f2005 <- read.csv(f[2], header = TRUE) 
+f2006 <- read.csv(f[3], header = TRUE) 
+f2007 <- read.csv(f[4], header = TRUE) 
+f2008 <- read.csv(f[5], header = TRUE) 
+f2009 <- read.csv(f[6], header = TRUE) 
+f2010 <- read.csv(f[7], header = TRUE) 
+f2011 <- read.csv(f[8], header = TRUE) 
+f2012 <- read.csv(f[9], header = TRUE) 
+f2013 <- read.csv(f[10], header = TRUE) 
+f2014 <- read.csv(f[11], header = TRUE) 
+f2015 <- read.csv(f[12], header = TRUE) 
+f2016CA <- read.csv(f[13], header = TRUE) 
+f2016US <- read.csv(f[14], header = TRUE) 
+f2017 <- read.csv(f[15], header = TRUE) 
+f2018 <- read.csv(f[16], header = TRUE) 
+f2019 <- read.csv(f[17], header = TRUE) 
+f2020 <- read.csv(f[18], header = TRUE) 
+f2023 <- read.csv(f[19], header = TRUE) 
+```
+
+```{r}
+f2016 = bind_rows(f2016CA, f2016US)
+```
+
+## View DF
+```{r}
+f2001
+```
+```{r}
+names(f2001)
+```
+
+## Process
+
+1. pivot longer so column of temperature and date
+2. Group by site_id
+3. Select dates after day of thaw measurement
+4. Select only rows with temp above 0 (zero)
+5.  apply calculation
+
+# Functions to clean 
+
+```{r}
+selectColDf = function(x)  {
+  x %>%
+    dplyr::select(plotId, siteId, cntryId, lastNm, submitNm, lat, lon, year, month, day, biome, distur, fireYr, fireId, paired, gtProbe, hitRock, orgDpth, srfH2O, topoPos, slope, vegCvr, msrDoy, msrType, msrDepth,   contains("temperature_2m")) %>%
+    mutate(id = row_number()) -> x
+  return(x)
+}
+```
+
+```{r}
+cleanDf = function(x)  {
+  x %>%
+  pivot_longer(
+    cols = starts_with("X"),
+    names_to = "DateTemp",
+    values_to = "TempC",
+    values_drop_na = TRUE) %>% 
+  separate(DateTemp, c("tempDate", NA)) %>% 
+    mutate(plotId = as.character(plotId)) %>%
+    mutate(across(tempDate, ~ . |> str_extract("\\d+") |> as.character())) %>%
+    mutate(tempDate=ymd(tempDate)) %>%
+    mutate(TempDoy = yday(tempDate)) -> x
+  return(x)
+}
+```
+
+
+##  Apply functions to to each year
+
+### Select Column Function
+
+```{r}
+df2001 = f2001 %>% selectColDf()
+df2005 = f2005 %>% selectColDf()
+df2006 = f2006 %>% selectColDf()
+df2007 = f2007 %>% selectColDf()
+df2008 = f2008 %>% selectColDf()
+df2009 = f2009 %>% selectColDf()
+```
+
+```{r}
+df2010 = f2010 %>% selectColDf()
+df2011 = f2011 %>% selectColDf()
+df2012 = f2012 %>% selectColDf()
+df2013 = f2013 %>% selectColDf()
+df2014 = f2014 %>% selectColDf()
+```
+
+```{r}
+df2015 = f2015 %>% selectColDf()
+df2016 = f2016 %>% selectColDf()
+df2017 = f2017 %>% selectColDf()
+df2018 = f2018 %>% selectColDf()
+df2019 = f2019 %>% selectColDf()
+```
+
+```{r}
+unique(df2019$submitNm)
+```
+
+```{r}
+df2020 = f2020 %>% selectColDf()
+df2023 = f2023 %>% selectColDf()
+```
+
+
+### Clean function
+
+Note: the warning is referencing parts of the name being discarded in the separate process. This can be ignored for these chunks of code.
+
+```{r}
+( clean2001 = df2001 %>% cleanDf() )
+```
+
+```{r}
+clean2005 = df2005 %>% cleanDf()
+clean2006 = df2006 %>% cleanDf()
+clean2007 = df2007 %>% cleanDf()
+clean2008 = df2008 %>% cleanDf()
+clean2009 = df2009 %>% cleanDf()
+```
+
+```{r}
+clean2010 = df2010 %>% cleanDf()
+clean2011 = df2011 %>% cleanDf()
+clean2012 = df2012 %>% cleanDf()
+clean2013 = df2013 %>% cleanDf()
+clean2014 = df2014 %>% cleanDf()
+```
+
+```{r}
+clean2015 = df2015 %>% cleanDf()
+clean2016 = df2016 %>% cleanDf()
+clean2017 = df2017 %>% cleanDf()
+clean2018 = df2018 %>% cleanDf()
+clean2019 = df2019 %>% cleanDf()
+```
+
+```{r}
+clean2019
+```
+
+```{r}
+clean2020 = df2020 %>% cleanDf()
+clean2023 = df2023 %>% cleanDf()
+```
+
+# Function to Identify ALT date for estimating
+
+```{r}
+idAltDateFun = function(x)  {
+  x %>%
+  arrange(id, tempDate) %>%
+  group_by(id) %>%
+  mutate(RollMean = zoo::rollmean(TempC, k = 5, fill = NA)) %>% 
+    filter(TempDoy>=200)  %>%
+    ungroup() %>%
+    filter(RollMean <=0) %>%
+    group_by(lastNm, plotId, siteId, year) %>% # regroup by last name, plot id, and site id
+  #filter(site_id== "DFTB") %>%
+    arrange(TempDoy) %>% # sort by date of temp measures
+  mutate(TempDoy_diff = TempDoy - lag(TempDoy)) %>%
+  filter(TempDoy_diff >= 1) %>%
+  summarize(minDate = min(TempDoy),
+            meanDate = mean(TempDoy),
+            maxDate = max(TempDoy)) %>%
+    ungroup() -> x
+  return(x)
+}
+```
+
+## Identify ALT date
+
+```{r}
+( rm2001 = clean2001 %>% idAltDateFun() )
+```
+
+```{r}
+rm2005 = clean2005 %>% idAltDateFun()
+rm2006 = clean2006 %>% idAltDateFun()
+rm2007 = clean2007 %>% idAltDateFun()
+rm2008 = clean2008 %>% idAltDateFun()
+rm2009 = clean2009 %>% idAltDateFun()
+```
+
+```{r}
+rm2010 = clean2010 %>% idAltDateFun()
+rm2011 = clean2011 %>% idAltDateFun()
+rm2012 = clean2012 %>% idAltDateFun()
+rm2013 = clean2013 %>% idAltDateFun()
+rm2014 = clean2014 %>% idAltDateFun()
+```
+
+```{r}
+rm2015 = clean2015 %>% idAltDateFun()
+rm2016 = clean2016 %>% idAltDateFun()
+rm2017 = clean2017 %>% idAltDateFun()
+rm2018 = clean2018 %>% idAltDateFun()
+rm2019 = clean2019 %>% idAltDateFun()
+```
+
+```{r}
+rm2019
+unique(rm2019$lastNm)
+```
+
+```{r}
+rm2020 = clean2020 %>% idAltDateFun()
+rm2023 = clean2023 %>% idAltDateFun()
+```
+
+## Combine Df together
+
+```{r}
+combine2001 = merge(clean2001, rm2001[, c('plotId', 'siteId', 'year', 'minDate')], by = c('plotId', 'siteId', 'year'), all.x=TRUE) 
+combine2005 = merge(clean2005, rm2005[, c('plotId', 'siteId', 'year', 'minDate')], by = c('plotId', 'siteId', 'year'), all.x=TRUE) 
+combine2006 = merge(clean2006, rm2006[, c('plotId', 'siteId', 'year', 'minDate')], by = c('plotId', 'siteId', 'year'), all.x=TRUE) 
+combine2007 = merge(clean2007, rm2007[, c('plotId', 'siteId', 'year', 'minDate')], by = c('plotId', 'siteId', 'year'), all.x=TRUE) 
+combine2008 = merge(clean2008, rm2008[, c('plotId', 'siteId', 'year', 'minDate')], by = c('plotId', 'siteId', 'year'), all.x=TRUE) 
+combine2009 = merge(clean2009, rm2009[, c('plotId', 'siteId', 'year', 'minDate')], by = c('plotId', 'siteId', 'year'), all.x=TRUE) 
+combine2010 = merge(clean2010, rm2010[, c('plotId', 'siteId', 'year', 'minDate')], by = c('plotId', 'siteId', 'year'), all.x=TRUE) 
+combine2011 = merge(clean2011, rm2011[, c('plotId', 'siteId', 'year', 'minDate')], by = c('plotId', 'siteId', 'year'), all.x=TRUE) 
+combine2012 = merge(clean2012, rm2012[, c('plotId', 'siteId', 'year', 'minDate')], by = c('plotId', 'siteId', 'year'), all.x=TRUE) 
+combine2013 = merge(clean2013, rm2013[, c('plotId', 'siteId', 'year', 'minDate')], by = c('plotId', 'siteId', 'year'), all.x=TRUE) 
+combine2014 = merge(clean2014, rm2014[, c('plotId', 'siteId', 'year', 'minDate')], by = c('plotId', 'siteId', 'year'), all.x=TRUE) 
+combine2015 = merge(clean2015, rm2015[, c('plotId', 'siteId', 'year', 'minDate')], by = c('plotId', 'siteId', 'year'), all.x=TRUE) 
+combine2016 = merge(clean2016, rm2016[, c('plotId', 'siteId', 'year', 'minDate')], by = c('plotId', 'siteId', 'year'), all.x=TRUE) 
+combine2017 = merge(clean2017, rm2017[, c('plotId', 'siteId', 'year', 'minDate')], by = c('plotId', 'siteId', 'year'), all.x=TRUE) 
+combine2018 = merge(clean2018, rm2018[, c('plotId', 'siteId', 'year', 'minDate')], by = c('plotId', 'siteId', 'year'), all.x=TRUE) 
+combine2019 = merge(clean2019, rm2019[, c('plotId', 'siteId', 'year', 'minDate')], by = c('plotId', 'siteId', 'year'), all.x=TRUE) 
+combine2020 = merge(clean2020, rm2020[, c('plotId', 'siteId', 'year', 'minDate')], by = c('plotId', 'siteId', 'year'), all.x=TRUE) 
+combine2023 = merge(clean2023, rm2023[, c('plotId', 'siteId', 'year', 'minDate')], by = c('plotId', 'siteId', 'year'), all.x=TRUE) 
+```
+
+```{r}
+combine2001
+```
+
+```{r}
+unique(combine2019$lastNm)
+```
+```{r}
+head(combine2001)
+head(combine2005)
+head(combine2006)
+head(combine2007)
+head(combine2008)
+head(combine2009)
+head(combine2010)
+head(combine2011)
+head(combine2012)
+head(combine2013)
+head(combine2014)
+head(combine2015)
+head(combine2016)
+head(combine2017)
+head(combine2018)
+head(combine2019)
+head(combine2020)
+head(combine2023)
+
+```
+# Bind clean 
+
+Combine yearly data frames; rename columns that were truncated by EE. 
+
+```{r}
+( 
+combineAll = dplyr::bind_rows(combine2001, combine2005, combine2006, combine2007, combine2008, combine2009, combine2010, combine2011, combine2012, combine2013, combine2014, combine2015, combine2016, combine2017, combine2018, combine2019, combine2020, combine2023) %>%
+  mutate(estDoy = minDate-14) %>%
+  rename(orgDepth = orgDpth)
+)
+```
+
+
+```{r}
+names(combineAll)
+```
+
+```{r}
+unique(combineAll$lastNm)
+```
+
+
+# write to csv
+
+```{r}
+write.csv(combineAll,file = "../outputs/era5Clean/RawDataWithERA5.csv", row.names = FALSE)
+```
+
+
+

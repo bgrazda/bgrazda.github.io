@@ -1,0 +1,158 @@
+---
+title: "Estimate ALT"
+author: "Anna Talucci"
+date: "2024-02-13"
+output: html_document
+---
+
+```{r clear environment, include=FALSE}
+rm(list=ls())
+```
+
+# Overview
+
+This script estimates end of season Active Layer thickness (ALT) based on time of field measurement, depth of field measurement and ERA5-Land temperature date. 
+
+# Packages
+
+```{r}
+library(tidyverse)
+library(lubridate)
+library(sf)
+```
+
+# Data
+
+```{r}
+data = read_csv("../outputs/era5Clean/RawDataWithERA5.csv")
+```
+
+```{r}
+glimpse(data)
+```
+
+## Double checks
+
+```{r}
+( manies = data %>% filter(lastNm=="Manies") %>%filter(id <=41) )
+unique(manies$msrDoy)
+```
+
+```{r}
+( dieleman = data %>% filter(lastNm=="Dieleman_Baltzer_Turetsky") ) 
+```
+
+# Functions to standarize
+
+Formula Parts 
+A. Take the square root of the Sum of the total degrees above zero for dates prior to thaw depth measure
+B. Take the square root of the Sum of the total degrees above zero for dates prior to active layer thickness date ()
+
+C. Divide B by A
+F. Multiply thaw depth measure by C
+
+```{r}
+calc_A = function(x) {
+  x %>% 
+    group_by(year, id, lastNm, msrDoy) %>%
+    filter(TempDoy < msrDoy) %>%
+  filter(TempC > 0) %>%
+    arrange(TempDoy) %>%
+  summarize( 
+  A_sum = sum(TempC),
+  A = sqrt(A_sum)) -> x
+  return(x)
+}
+
+```
+
+
+```{r}
+
+calc_B = function(x) {
+  x %>% 
+    group_by(year, id, lastNm, msrDoy) %>%
+    filter(TempDoy < estDoy) %>%
+  filter(TempC > 0) %>%
+    arrange(TempDoy) %>%
+  summarize( 
+  B_sum = sum(TempC),
+  B = sqrt(B_sum)) -> x
+  return(x)
+ }
+```
+
+### Calculate A & B
+
+```{r}
+( calc_A_data = calc_A(data) )
+```
+
+```{r}
+( calc_B_data = calc_B(data) )
+```
+
+### Filter original data 
+
+```{r}
+( orgData = data %>% 
+  group_by(year, id, lastNm) %>%
+  filter(TempDoy == estDoy)
+)
+  
+```
+
+### Join Calculations with Orginial Data
+
+```{r}
+( dataCombine = orgData %>% 
+    full_join(y=calc_A_data, by=c("year", "id", 'lastNm', 'msrDoy')) %>%
+    full_join(y=calc_B_data, by=c("year", "id", 'lastNm', 'msrDoy')) %>%
+    mutate(A_sum = ifelse(is.na(A_sum), 0, A_sum),
+           A =ifelse(is.na(A), 0, A)) %>%
+    mutate(C = B/A) %>%
+    mutate(estDepth = round((msrDepth*C), 0)) 
+    )
+```
+
+```{r}
+dataCombine %>% filter(siteId ==("lutose_2000")) %>% filter(plotId ==("4-8")) %>% filter(fireYr==2000) %>% filter(year==2015) %>% write_csv(., "..//outputs/Table3.csv")
+```
+
+# Remove outliers, na, and INF
+
+```{r}
+dataCombine %>% filter_at(vars(estDepth), all_vars(is.infinite(.)))
+dataCombine %>% filter(if_any(estDepth, is.infinite))
+dataCombine %>% filter(if_any(estDepth, is.na))
+```
+
+# Remove Infinite values
+
+```{r}
+( est_infinite = dataCombine %>% 
+    filter_at(vars(estDepth), all_vars(is.infinite(.))) %>%
+    group_by(submitNm) %>%
+    summarize(n= n())
+)
+```
+```{r}
+( cleanDataCombine = dataCombine %>% 
+    filter_at(vars(estDepth), all_vars(!is.infinite(.))) 
+)
+```
+
+```{r}
+names(cleanDataCombine)
+```
+
+```{r}
+unique(cleanDataCombine$lastNm)
+```
+
+### Write to csv
+
+```{r}
+write.csv(cleanDataCombine, file = "../outputs/dataset/FireAltEstimated.csv", row.names=FALSE)
+```
+

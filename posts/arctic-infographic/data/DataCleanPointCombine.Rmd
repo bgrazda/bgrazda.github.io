@@ -1,0 +1,1676 @@
+---
+title: "Data Clean to Point & Combine"
+author: "Anna Talucci"
+date: "2023-09-21"
+output: html_document
+---
+
+```{r clear environment, include=FALSE}
+rm(list=ls())
+```
+
+# Overview
+
+This script was adapt script form M. Loranty data_cleaning, to only clean and not aggregate data. The csv files are downloaded from the Google Drive sheets that were populated by the data contributor.
+
+**What this script does**
+This script takes each data contribution and checks abnormalities and formatting issues. It fixes any issues. Data is then combines into a single data frame and converted in to a spatial data set and saved as a shapefile and csv file. 
+
+# Packages
+
+```{r}
+library(tidyverse)
+library(lubridate)
+library(sf)
+```
+
+# Projection
+
+WGS 84 need for gee
+```{r}
+wgs_proj =  "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs "
+```
+
+# Data
+
+## vector of data files
+original data in "../data/GoogleDriveCsvFolder/"
+```{r}
+f <- list.files(path = "../data/GoogleDriveCsv20250123/",
+                pattern = "*.csv", full.names = TRUE)
+```
+
+```{r}
+f
+```
+
+
+# Clean by contributor
+## 1. Baillargeon
+```{r}
+f1 <- read.csv(f[1], header = TRUE) 
+```
+
+```{r}
+f1
+```
+```{r}
+# change organic depth range to numeric
+f1$organic_depth <- 25
+
+# indicate measurements that exceed probe length
+f1$gt_probe[which(f1$thaw_depth == "100+")] <- "y"
+
+# get rid of non-numeric thaw probe measurements
+f1$thaw_depth <- as.numeric(sub("100+", "100", f1$thaw_depth, fixed = TRUE))
+
+# get rid of non-numeric fire year entries
+f1$fire_year <- as.numeric(sub("unburned", NA, f1$fire_year, fixed = TRUE))
+
+# fix slope, which was read as logical
+f1$slope <- read.csv(f[1], header = TRUE, colClasses = "character")[,20]
+
+# fix thaw_active - these are TD measurements, not ALD
+f1$thaw_active <- "T"
+```
+
+```{r}
+unique(f1$veg_cover_class)
+```
+
+```{r}
+# examine unique combinations of identify information for aggregatation
+f1 %>% distinct(site_id,year,month,day,fire_id,burn_unburn)
+str(f1)
+```
+```{r}
+unique(f1$slope)
+f1$slope[f1$slope == "F"] <- "flat"
+unique(f1$slope)
+```
+
+```{r}
+# Add date 
+(
+  f1_dates = f1 %>%
+  mutate(date = as.Date(with(., paste(year, month, day,sep="-")), "%Y-%m-%d")) %>%
+  mutate(msrDoy = yday(date)) %>%
+  mutate(paired = ifelse(site_id == 'a', "a1",
+                  ifelse(site_id == 'b', "a2",
+                  ifelse(site_id == 'c', "a3",
+                  ifelse(site_id == 'd', "a4",
+                  ifelse(site_id == 'e', "a5",
+                  ifelse(site_id == 'f', "a6", "a7"))))))) %>%
+    mutate(submitNm="Baillargeon")
+)
+```
+
+```{r}
+# Check na for specific columns
+f1 %>% filter(is.na(lat)) 
+f1 %>% filter(is.na(long)) 
+f1 %>% filter(is.na(year)) 
+f1 %>% filter(is.na(month))
+f1 %>% filter(is.na(day)) 
+f1 %>% filter(is.na(fire_year)) 
+f1 %>% filter(is.na(thaw_depth)) 
+```
+
+```{r}
+# distinct site pairs
+f1_dates %>% distinct(site_id, plot_id, fire_id, burn_unburn) 
+f1_dates %>% distinct(msrDoy, year, date)
+```
+
+
+```{r}
+#Summarize missing data issues
+f1_missingSum = f1_dates %>% summarize(ct = n(),
+                       day = sum(is.na(day)),
+                       FireYear = sum(is.na(fire_year)),
+                       gtp = sum(gt_probe=="y"),
+                       hit_rock = sum(hit_rock=="y"), 
+                       thaw_depth = sum(is.na(thaw_depth)),
+                       NoPair = sum(is.na(paired))
+                       ) %>%
+  mutate(submitNm = "Baillargeon")
+```
+
+## 2. Breen
+```{r}
+f2 <- read.csv(f[2], header = TRUE)
+f2
+```
+```{r}
+str(f2)
+unique(f2$year)
+```
+
+```{r}
+unique(f2$slope)
+
+f2$slope[f2$slope == "F"] <- "flat"
+f2$slope[f2$slope == "S"] <- "sloped"
+unique(f2$slope)
+```
+
+```{r}
+# Create single fire year
+( f2_dates = f2 %>%
+  mutate(fire_year = pmax(fire_year_1 , fire_year_2, fire_year_3, na.rm = TRUE)) %>%
+  mutate(reburn = paste(fire_year_1 , fire_year_2, fire_year_3, sep = ', ')) %>%
+    mutate(fire_id = paste(fire_id1 , fire_id2, fire_id3, sep = ', ')) %>%
+  dplyr::select(last_name:day, burn_unburn:reburn, fire_id) %>%
+  mutate(date = as.Date(with(., paste(year, month, day,sep="-")), "%Y-%m-%d")) %>%
+  mutate(msrDoy = yday(date)) %>%
+    mutate(fire_id = gsub("\\,,*", "", fire_id)) %>%
+    drop_na(lat)  %>%
+  mutate(paired = "b1") %>%
+    mutate(submitNm="Breen")
+)
+```
+
+```{r}
+# Check na for specific columns
+f2_dates %>% filter(is.na(lat)) 
+f2_dates %>% filter(is.na(long)) 
+f2_dates %>% filter(is.na(year)) 
+f2_dates %>% filter(is.na(month))
+f2_dates %>% filter(is.na(day)) 
+f2_dates %>% filter(is.na(fire_year)) %>% filter(burn_unburn=="burned")
+f2_dates %>% filter(is.na(thaw_depth)) 
+```
+
+```{r}
+# Look at distinct identifiers
+f2_dates %>% distinct(site_id, plot_id, burn_unburn) 
+f2_dates %>% distinct(msrDoy, year, date)
+```
+
+```{r}
+#Summarize missing data issues
+f2_missingSum = f2_dates %>% summarize(ct = n(),
+                       day = sum(is.na(day)),
+                       FireYear = sum(is.na(fire_year)),
+                       gtp = sum(gt_probe=="y"),
+                       hit_rock = sum(hit_rock=="y"), 
+                       thaw_depth = sum(is.na(thaw_depth)),
+                       NoPair = sum(is.na(paired))
+                       ) %>%
+  mutate(submitNm = "Breen")
+```
+
+## 3. Buma
+
+```{r}
+# read without 17th column, which is redundant to the gt_prob column
+f3 <- read.csv(f[3], header = TRUE)
+f3
+```
+
+```{r}
+unique(f3$slope)
+
+f3$slope[f3$slope == "F"] <- "flat"
+f3$slope[f3$slope == "S"] <- "sloped"
+unique(f3$slope)
+```
+
+```{r}
+# fix thaw/active column, which was read as logical
+f3$thaw_active <- read.csv(f[3], header = TRUE, colClasses = "character")[,20]
+
+# fix site_id for aggregating (see Note below from Buma)
+f3$site_id <- paste(f3$site_id, sapply(strsplit(f3$plot,"_"),"[[",2), sep="_" )
+
+#fix positive longitude values, which are in the wrong hemisphere
+f3$long <- ifelse(f3$long > 0, -f3$long,f3$long)
+```
+NOTE---The Dalton and the Steese are larger "sites," each of which has a lot of plots in them.  But those plots do vary, so don't aggregate.  At the Dalton, there are sites with 0 (unburned), 1 (one fire, which would be 2004/2005 era), 2 fires (which would be 1970's era AND 2004 or 2005), or 3 fires (which would be 1950's, 1970's, and 2004 or 2005.  So if aggregating, what you'd want to do would be to aggregate by those treatments (0, 1, 2, or 3 fires) within the Dalton or Steese "sites."  So, sounds like you'd want to aggregate all the unburned plots at the Dalton, all the 1 burn plots at the Dalton, etc.  I would not aggregate Dalton and Steese plots together, they are functionally different sites (uplands vs. low lands, respectively).
+
+```{r}
+# Check na for specific columns
+f3 %>% filter(is.na(lat)) 
+f3 %>% filter(is.na(long)) 
+f3 %>% filter(is.na(year)) 
+f3 %>% filter(is.na(month))
+f3 %>% filter(is.na(day)) 
+f3 %>% filter(is.na(fire_year)) 
+f3 %>% filter(is.na(thaw_depth)) 
+```
+
+```{r}
+f3
+str(f3)
+```
+
+```{r}
+( f3_dates = f3 %>%
+    dplyr::select(-HIT) %>%
+  mutate(date = as.Date(with(., paste(year, month, day,sep="-")), "%Y-%m-%d")) %>%
+  mutate(msrDoy = yday(date))  %>%
+  mutate(paired = ifelse(site_id %in% c('DALTON_1', 'DALTON_2', 'DALTON_3', 'DALTON_0'), "c1", NA)) %>%
+    mutate(submitNm="Buma")
+)
+```
+```{r}
+f3_dates %>% filter(long > 0)
+```
+```{r}
+f3_dates %>% distinct(site_id, burn_unburn) 
+f3_dates %>% distinct(site_id, plot_id, fire_id, burn_unburn) 
+f3_dates %>% distinct(msrDoy, year, date)
+```
+
+```{r}
+#Summarize missing data issues
+f3_missingSum = f3_dates %>% summarize(ct = n(),
+                       day = sum(is.na(day)),
+                       FireYear = sum(is.na(fire_year)),
+                       gtp = sum(gt_probe=="y"),
+                       hit_rock = sum(hit_rock=="y"), 
+                       thaw_depth = sum(is.na(thaw_depth)),
+                       NoPair = sum(is.na(paired))
+                       ) %>%
+  mutate(submitNm = "Buma")
+```
+
+## 4. Diaz-Veraverbeke
+
+```{r}
+f4 <- read.csv(f[4], header = TRUE)
+f4
+```
+```{r}
+
+
+str(f4)
+```
+
+```{r}
+# fix incorrect logical columns
+#f4$thaw_active <- read.csv(f[4], header = TRUE, colClasses = "character")[,20]
+```
+
+```{r}
+f4 %>% dplyr::select(plot_id, pairUnb) %>% group_by(pairUnb) %>% 
+       arrange(., desc(pairUnb))
+```
+
+```{r}
+# Check na for specific columns
+f4 %>% filter(is.na(lat)) 
+f4 %>% filter(is.na(long)) 
+f4 %>% filter(is.na(year)) 
+f4 %>% filter(is.na(month))
+f4 %>% filter(is.na(day)) 
+f4 %>% filter(is.na(fire_year)) 
+f4 %>% filter(is.na(thaw_depth)) 
+```
+
+```{r}
+(
+  f4_dates = f4 %>%
+  mutate(date = as.Date(with(., paste(year, month, day,sep="-")), "%Y-%m-%d")) %>%
+  mutate(msrDoy = yday(date)) %>%
+  drop_na((lat))  %>%
+  mutate(paired = ifelse(plot_id %in% c('23EF07B', '23EF12B', '23EF22B', '23EF23B', '23EF27C'), "d1",
+                  ifelse(plot_id %in% c('23EF05B', '23EF10B',	'23EF14C'), "d2",
+                  ifelse(plot_id %in% c('23EF08B', '23EF11B', '23EF15B', '23EF19B', '23EF26B', '23EF28B', '23EF13C'), "d3",
+                  ifelse(plot_id %in% c('23EF04B', '23EF17B', '23EF09C'), "d4",
+                  ifelse(plot_id %in% c('23EF01B', '23EF03B', '23EF06B', '23EF16B', '23EF18B', '23EF20B', '23EF21B', '23EF24B', '23EF25B', '23EF29B', '23EF02C'), "d5",
+                  ifelse(plot_id %in% c('23AP36B', '23AP37B', '23AP38B', '23AP42B', '23AP45B', '23AP44C'), "d6", 
+                ifelse(plot_id %in% c('23AP34B', '23AP40B', '23AP41B', '23AP35C'), "d7", "d8")))))))) %>%
+    mutate(submitNm="Diaz",
+           slope_cat = ifelse(slope==0, "flat", "sloped")) %>%
+    dplyr::select(-Transect_distance_m, -slope) %>%
+    rename(slope =slope_cat)
+)
+```
+
+```{r}
+f4_dates %>% distinct(site_id, plot_id, fire_id, burn_unburn) 
+f4_dates %>% distinct(msrDoy, year, date)
+```
+
+```{r}
+#Summarize missing data issues
+f4_missingSum = f4_dates %>% summarize(ct = n(),
+                       day = sum(is.na(day)),
+                       FireYear = sum(is.na(fire_year)),
+                       gtp = sum(gt_probe=="y"),
+                       hit_rock = sum(hit_rock=="y"), 
+                       thaw_depth = sum(is.na(thaw_depth)),
+                       NoPair = sum(is.na(paired))
+                       ) %>%
+  mutate(submitNm = "Diaz")
+```
+
+## 5. Dielman
+```{r}
+f5 <- read.csv(f[5], header = TRUE)
+f5
+```
+```{r}
+unique(f5$slope)
+
+f5$slope[f5$slope == "F"] <- "flat"
+unique(f5$slope)
+```
+
+Fix incorrect logical columns
+```{r}
+f5[,c(12,14,15)] <- read.csv(f[5], header = TRUE, colClasses = "character")[,c(12,14,15)]
+```
+
+```{r}
+f5 %>% distinct(site_id,year,month,day,fire_id,burn_unburn)
+```
+
+```{r}
+str(f5)
+```
+```{r}
+unique(f5$slope)
+
+f5$slope[f5$slope == "F"] <- "flat"
+unique(f5$slope)
+```
+```{r}
+unique(f5$site_id)
+```
+
+```{r}
+f5 %>% group_by(thaw_active, site_id) %>% count(.)
+f5 %>% filter(thaw_active == "T")
+f5 %>% filter(thaw_active == "A")
+f5 %>% filter(lat>89)
+```
+
+```{r}
+# Check na for specific columns
+f5 %>% filter(is.na(lat)) 
+f5 %>% filter(is.na(long)) 
+f5 %>% filter(is.na(year)) 
+f5 %>% filter(is.na(month))
+f5 %>% filter(is.na(day)) 
+f5 %>% filter(is.na(fire_year)) 
+f5 %>% filter(is.na(thaw_depth)) 
+```
+
+```{r}
+(
+  f5_dates = f5 %>%
+  mutate(date = as.Date(with(., paste(year, month, day,sep="-")), "%Y-%m-%d")) %>%
+  mutate(msrDoy = yday(date)) %>%
+  mutate(paired = ifelse(site_id %in% c("CG1-15", "CG1-157", "CG1-18", "CG1-25", "CG1-6", "CG1-8", "F1-12", "F1-22", "F1-25", 'F1-31', 'F1-47'), 'e1',
+                  ifelse(site_id %in% c('C1-14', 'C1-17', 'C1-19', 'C1-32', 'C1-8', 'F11-1', 'F11-10', 'F11-15', 'F11-19'), 'e2',
+                  ifelse(site_id %in% c('F13-11', 'F13-5', 'C5-4'), 'e3',
+                  ifelse(site_id %in% c('C7-18', 'C7-5', 'C7-9', 'C8-4', 'C9-1', 'C9-5', 'C9-9', 'F15-13', 'F15-16', 'F15-9', 'F17-5'), 'e4',
+                  ifelse(site_id %in% c('CG3-12', 'CG3-30', 'CG3-31', 'CG3-4', 'CG3-40', 'F3-19', 'F3-3','F3-8'), 'e5',
+                  ifelse(site_id %in% c('CG2-20', 'CG2-5', 'F4-1', 'F4-31', 'ZF46-1',  'ZF46-15', 'ZF46-18', 'ZF46-21'), 'e6',
+                   ifelse(site_id %in% c('KAK-UB-1', 'SS33-1','SS33-11','SS33-21','SS33-21','SS33-25','SS33-26','SS33-27','SS33-27','SS33-27','SS33-3','SS33-582','SS33-6','SS33-6',
+'SS33-877','SS33-877','SS33-9'), 'e7',      
+                   ifelse(site_id %in% c('ZF20-10', 'ZF20-11', 'ZF20-12', 'ZF20-125', 'ZF20-4', 'ZF20-40', 'ZF20-43', 'ZF20-6', 'ZF20-8', 'ZF20-9', 'ZF20-9', 'HWY3-UB-1'), 'e8',
+                ifelse(site_id %in% c('ZF26-104', 'ZF26-112', 'ZF26-113', 'ZF26-118', 'ZF26-5', 'ZF26-50', 'ZF26-6', 'ZF26-66', 'ZF26-7', 'ZF26-96', 'ZF26-98', 'WEK-UB-1'), 'e9', NA)))))))))) %>%
+    mutate(submitNm="Dieleman") %>%
+  drop_na(lat) # removes 1000 blank rows
+)
+```
+
+```{r}
+f5_dates %>% distinct(site_id, plot_id, fire_id, burn_unburn) 
+f5_dates %>% distinct(msrDoy, year, date)
+```
+
+```{r}
+#Summarize missing data issues
+f5_missingSum = f5_dates %>% summarize(ct = n(),
+                       day = sum(is.na(day)),
+                       FireYear = sum(is.na(fire_year)),
+                       gtp = sum(gt_probe=="y"),
+                       hit_rock = sum(hit_rock=="y"), 
+                       thaw_depth = sum(is.na(thaw_depth)),
+                       NoPair = sum(is.na(paired))
+                       ) %>%
+  mutate(submitNm = "Dieleman")
+```
+
+## 6. Douglas
+
+```{r}
+f6 <- read.csv(f[6], header = TRUE)
+f6
+```
+
+
+```{r}
+str(f6)
+```
+```{r}
+# fix slope, which was read as logical
+f6$slope <- read.csv(f[6], header = TRUE, colClasses = "character")[,20]
+```
+
+```{r}
+unique(f6$slope)
+
+f6$slope[f6$slope == "F"] <- "flat"
+unique(f6$slope)
+```
+
+```{r}
+# Check na for specific columns
+f6 %>% filter(is.na(lat)) 
+f6 %>% filter(is.na(long)) 
+f6 %>% filter(is.na(year)) 
+f6 %>% filter(is.na(month))
+f6 %>% filter(is.na(day)) 
+f6 %>% filter(is.na(fire_year)) 
+f6 %>% filter(is.na(thaw_depth)) 
+```
+```{r}
+f6_dates = f6 %>%
+  mutate(date = as.Date(with(., paste(year, month, day,sep="-")), "%Y-%m-%d")) %>%
+  mutate(msrDoy = yday(date)) %>%
+  dplyr::select(-notes)  %>%
+  mutate(paired = "f1") %>%
+    mutate(submitNm="Douglas")
+
+f6_dates
+```
+
+
+```{r}
+f6_dates %>% distinct(site_id, plot_id, fire_id, burn_unburn) 
+f6_dates %>% distinct(msrDoy, year, date)
+```
+
+```{r}
+#Summarize missing data issues
+f6_missingSum = f6_dates %>% summarize(ct = n(),
+                       day = sum(is.na(day)),
+                       FireYear = sum(is.na(fire_year)),
+                       gtp = sum(gt_probe=="y"),
+                       hit_rock = sum(hit_rock=="y"), 
+                       thaw_depth = sum(is.na(thaw_depth)),
+                       NoPair = sum(is.na(paired))
+                       ) %>%
+  mutate(submitNm = "Douglas")
+```
+
+
+## 7. Frost
+
+```{r}
+f7 <- read.csv(f[7], header = TRUE)
+f7
+```
+```{r}
+str(f7)
+```
+
+```{r}
+unique(f7$slope)
+
+f7$slope[f7$slope == "F"] <- "flat"
+f7$slope[f7$slope == "S"] <- "sloped"
+unique(f7$slope)
+```
+
+```{r}
+f7$thaw_active <- read.csv(f[7], header = TRUE, colClasses = "character")[,19]
+```
+
+```{r}
+# Check na for specific columns
+f7 %>% filter(is.na(lat)) 
+f7 %>% filter(is.na(long)) 
+f7 %>% filter(is.na(year)) 
+f7 %>% filter(is.na(month))
+f7 %>% filter(is.na(day)) 
+f7 %>% filter(is.na(fire_year)) %>% filter(burn_unburn=="burned")
+f7 %>% filter(is.na(thaw_depth)) 
+```
+
+```{r}
+unique(f7$site_id)
+f7 %>% group_by(thaw_active, site_id) %>% count(.)
+f7 %>% filter(thaw_active == "T")
+```
+
+```{r}
+( 
+f7_dates = f7 %>%
+  mutate(date = as.Date(with(., paste(year, month, day,sep="-")), "%Y-%m-%d")) %>%
+  mutate(msrDoy = yday(date)) %>%
+  mutate(paired = "g1") %>%
+    mutate(submitNm="Frost")
+)
+```
+
+
+```{r}
+f7_dates %>% distinct(site_id, plot_id, fire_id, burn_unburn) 
+f7_dates %>% distinct(msrDoy, year, date)
+```
+
+```{r}
+#Summarize missing data issues
+f7_missingSum = f7_dates %>% summarize(ct = n(),
+                       day = sum(is.na(day)),
+                       FireYear = sum(is.na(fire_year)),
+                       gtp = sum(gt_probe=="y"),
+                       hit_rock = sum(hit_rock=="y"), 
+                       thaw_depth = sum(is.na(thaw_depth)),
+                       NoPair = sum(is.na(paired))
+                       ) %>%
+  mutate(submitNm = "Frost")
+```
+
+## 8. Gaglioti
+
+```{r}
+f8 <- read.csv(f[8], header = TRUE)
+f8
+```
+
+```{r}
+unique(f8$slope)
+
+f8$slope[f8$slope == "S"] <- "sloped"
+unique(f8$slope)
+```
+
+```{r}
+# set gt_probe
+f8$gt_probe <- "n"
+
+# organic depth is missing, but set to NA
+f8$organic_depth <- as.numeric(f8$organic_depth)
+```
+
+```{r}
+# Check na for specific columns
+f8 %>% filter(is.na(lat)) 
+f8 %>% filter(is.na(long)) 
+f8 %>% filter(is.na(year)) 
+f8 %>% filter(is.na(month))
+f8 %>% filter(is.na(day)) 
+f8 %>% filter(is.na(fire_year)) 
+f8 %>% filter(is.na(thaw_depth)) 
+```
+
+```{r}
+str(f8)
+```
+
+```{r}
+(
+  f8_dates = f8 %>%
+  mutate(date = as.Date(with(., paste(year, month, day,sep="-")), "%Y-%m-%d")) %>%
+  mutate(msrDoy = yday(date)) %>%
+  dplyr::select(-Notes) %>%
+  mutate(paired = "h1") %>%
+    mutate(submitNm="Gaglioti")
+)
+```
+
+```{r}
+f8_dates %>% distinct(site_id, plot_id, fire_id, burn_unburn) 
+f8_dates %>% distinct(msrDoy, year, date)
+```
+
+```{r}
+#Summarize missing data issues
+f8_missingSum = f8_dates %>% summarize(ct = n(),
+                       day = sum(is.na(day)),
+                       FireYear = sum(is.na(fire_year)),
+                       gtp = sum(gt_probe=="y"),
+                       hit_rock = sum(hit_rock=="y"), 
+                       thaw_depth = sum(is.na(thaw_depth)),
+                       NoPair = sum(is.na(paired))
+                       ) %>%
+  mutate(submitNm = "Gaglioti")
+```
+
+## 9. Holloway
+
+```{r}
+f9 <- read.csv(f[9], header = TRUE) 
+f9
+```
+
+```{r}
+unique(f9$slope)
+
+```
+
+```{r}
+# View data
+glimpse(f9)
+```
+
+```{r}
+# check thaw_active and slope
+unique(f9$thaw_active)
+unique(f9$slope)
+```
+
+```{r}
+# Check gt_probe yes
+gtProbeYes = filter(f9, gt_probe=="y")
+unique(gtProbeYes$thaw_depth)
+```
+
+```{r}
+# Check na for specific columns
+f9 %>% filter(is.na(lat)) 
+f9 %>% filter(is.na(long)) 
+f9 %>% filter(is.na(year)) 
+f9 %>% filter(is.na(month))
+f9 %>% filter(is.na(day)) 
+f9 %>% filter(is.na(fire_year)) %>% filter(burn_unburn == "burned")
+f9 %>% filter(is.na(thaw_depth)) 
+```
+
+```{r}
+# Fixes 
+f9 = f9 %>%
+     mutate(thaw_active=replace(thaw_active, thaw_active==TRUE, 'thaw')) %>% # switch true to thaw
+     as.data.frame() %>%
+  mutate(slope=replace(slope, slope==FALSE, 'flat')) %>% # switch false to flat
+     as.data.frame() %>%
+  mutate(gt_probe=replace(gt_probe, thaw_depth==87, "n")) %>%
+     as.data.frame() %>%
+  mutate(gt_probe=replace(gt_probe, thaw_depth %in% c("110+", "125+", "120+", "180+", "195+"), "y")) %>%
+     as.data.frame() %>%
+  mutate(thaw_depth = gsub("\\+","", thaw_depth)) %>%
+  mutate(thaw_depth = as.numeric(thaw_depth)) %>%
+  mutate(paired = ifelse(site_id %in% c('b14', 'b9', 'b12', 'b13', 'b15', 'b16', 'ub3'), "i1", "i2")) %>%
+    mutate(submitNm="Gaglioti")
+```
+
+```{r}
+f9
+# examine unique combinations of identify information for aggregatation
+f9 %>% distinct(site_id,year,month,day,fire_id,burn_unburn)
+str(f9)
+```
+
+```{r}
+(
+  f9_dates = f9 %>%
+  mutate(date = as.Date(with(., paste(year, month, day,sep="-")), "%Y-%m-%d")) %>%
+  mutate(msrDoy = yday(date)) %>%
+    mutate(submitNm="Holloway")
+)
+```
+
+```{r}
+f9_dates %>% distinct(site_id, plot_id, fire_id, burn_unburn, pairUnb) 
+f9_dates %>% distinct(msrDoy, year, date)
+```
+
+```{r}
+#Summarize missing data issues
+f9_missingSum = f9_dates %>% summarize(ct = n(),
+                       day = sum(is.na(day)),
+                       FireYear = sum(is.na(fire_year)),
+                       gtp = sum(gt_probe=="y"),
+                       hit_rock = sum(hit_rock=="y"), 
+                       thaw_depth = sum(is.na(thaw_depth)),
+                       NoPair = sum(is.na(paired))
+                       ) %>%
+  mutate(submitNm = "Holloway")
+```
+
+## 10. Loranty
+
+```{r}
+f10 <- read.csv(f[10], header = TRUE)
+f10
+```
+
+```{r}
+unique(f10$slope)
+
+
+f10$slope[f10$slope == "S"] <- "sloped"
+unique(f10$slope)
+```
+
+```{r}
+str(f10)
+glimpse(f10)
+```
+
+```{r}
+# Check na for specific columns
+f10 %>% filter(is.na(lat)) 
+f10 %>% filter(is.na(long)) 
+f10 %>% filter(is.na(year)) 
+f10 %>% filter(is.na(month))
+f10 %>% filter(is.na(day)) 
+f10 %>% filter(is.na(fire_year)) 
+f10 %>% filter(is.na(thaw_depth)) 
+```
+
+
+```{r}
+f10_dates = f10 %>%
+  mutate(date = as.Date(with(., paste(year, month, day,sep="-")), "%Y-%m-%d")) %>%
+  mutate(msrDoy = yday(date)) %>%
+  dplyr::select(-notes) %>%
+  mutate(paired = "j1") %>%
+    mutate(submitNm="Loranty")
+
+f10_dates
+```
+
+```{r}
+#Summarize missing data issues
+f10_missingSum = f10_dates %>% summarize(ct = n(),
+                       day = sum(is.na(day)),
+                       FireYear = sum(is.na(fire_year)),
+                       gtp = sum(gt_probe=="y"),
+                       hit_rock = sum(hit_rock=="y"), 
+                       thaw_depth = sum(is.na(thaw_depth)),
+                       NoPair = sum(is.na(paired))
+                       ) %>%
+  mutate(submitNm = "Loranty")
+```
+
+## 11. Manies
+
+```{r}
+f11 <- read.csv(f[11], header = TRUE)
+f11
+```
+```{r}
+str(f11)
+```
+
+```{r}
+unique(f11$slope)
+
+```
+
+```{r}
+# Fixes 
+f11 = f11 %>%
+   mutate(thaw_active=replace(thaw_active, thaw_active==TRUE, 'thaw')) %>% # switch true to thaw
+     as.data.frame() %>%
+  mutate(slope=replace(slope, slope==FALSE, 'flat')) %>% # switch false to flat
+     as.data.frame() %>%
+  mutate(organic_depth = (na.strings = "unk")) %>%
+     as.data.frame() 
+```
+
+```{r}
+# Check na for specific columns
+f11 %>% filter(is.na(lat)) 
+f11 %>% filter(is.na(long)) 
+f11 %>% filter(is.na(year)) 
+f11 %>% filter(is.na(month))
+f11 %>% filter(is.na(day)) 
+f11 %>% filter(is.na(fire_year)) 
+f11 %>% filter(is.na(thaw_depth)) 
+```
+
+
+```{r}
+f11_dates = f11 %>%
+  mutate(date = as.Date(with(., paste(year, month, day,sep="-")), "%Y-%m-%d")) %>%
+  mutate(msrDoy = yday(date)) %>%
+  dplyr::select(-notes) %>%
+  mutate(paired = "k1") %>%
+    mutate(submitNm="Manies")
+
+f11_dates
+```
+
+```{r}
+f11_dates %>% distinct(site_id, plot_id, fire_id, burn_unburn) 
+f11_dates %>% distinct(site_id, thaw_active, msrDoy, year, date)
+```
+
+```{r}
+#Summarize missing data issues
+f11_missingSum = f11_dates %>% summarize(ct = n(),
+                       day = sum(is.na(day)),
+                       FireYear = sum(is.na(fire_year)),
+                       gtp = sum(gt_probe=="y"),
+                       hit_rock = sum(hit_rock=="y"), 
+                       thaw_depth = sum(is.na(thaw_depth)),
+                       NoPair = sum(is.na(paired))
+                       ) %>%
+  mutate(submitNm = "Manies")
+```
+
+## 12. Natali
+
+```{r}
+f12 <- read.csv(f[12], header = TRUE)
+f12
+```
+
+```{r}
+unique(f12$slope)
+
+```
+```{r}
+# fix incorrect logical columns
+# organic depth is missing, but set to NA
+f12$organic_depth <- as.numeric(f12$organic_depth)
+
+# fix incorrect logical columns
+f12[,c(20:22)] <- read.csv(f[12], header = TRUE, colClasses = "character")[,c(20:22)]
+
+# remove characters from thaw depth and convert to numeric
+f12$thaw_depth <- gsub("+", "", f12$thaw_depth, fixed = TRUE)
+f12$thaw_depth <- as.numeric(gsub(">", "", f12$thaw_depth, fixed = TRUE))
+f12$long = as.numeric(gsub(",","",f12$long))
+#fix positive longitude values, which are in the wrong hemisphere
+f12$long <- ifelse(f12$long > 0, -f12$long,f12$long)
+```
+
+
+```{r}
+f12$fire_year[f12$plot_id %in% c('RT1', 'RT2', 'RT3', 'RT4', '1', '4', '4b', '5', 'B1', 'B2', 'B3')] <- 2015
+```
+
+```{r}
+# Check na for specific columns
+f12 %>% filter(is.na(lat)) 
+f12 %>% filter(is.na(long)) 
+f12 %>% filter(is.na(year)) 
+f12 %>% filter(is.na(month))
+f12 %>% filter(is.na(day)) 
+f12 %>% filter(is.na(fire_year)) %>% filter(burn_unburn %in% c("burn", "Burned", "burned", "Burn"))
+f12 %>% filter(is.na(thaw_depth)) 
+```
+
+
+```{r}
+str(f12)
+```
+
+```{r}
+(
+  f12_dates = f12 %>%
+  mutate(date = as.Date(with(., paste(year, month, day,sep="-")), "%Y-%m-%d")) %>%
+  mutate(msrDoy = yday(date)) %>%
+  mutate(paired = ifelse(site_id %in% c('ANKB', 'ANKU'), "l1",
+                  ifelse(site_id %in% c('BCB', 'BCU'), "l2",
+                  ifelse(site_id %in% c('HCB', 'HCU'), "l3",
+                  ifelse(site_id %in% c('NCB_OLD', 'NCU_OLD'), "l4",
+                  ifelse(site_id %in% c('NCB_NEW', 'NCU_NEW'), "l5",
+                  ifelse(site_id %in% c('YKDB', 'YKDU'), "l6", "l6"))))))) %>%
+    #drop_na(lat, long) %>%
+    mutate(submitNm="Natali")
+)
+```
+7,736 all data | NA in Lat/lon removed 7,712
+```{r}
+f12_dates %>% filter(long >0)
+```
+
+
+```{r}
+unique(f12_dates$site_id)
+f12_dates %>% group_by(thaw_active, site_id) %>% count(.)
+f12_dates %>% filter(thaw_active == "T")
+f12_dates %>% distinct(site_id, plot_id, fire_id, burn_unburn) 
+f12_dates %>% filter(site_id =="YKD")
+f12_dates %>% distinct(msrDoy, year, date)
+f12_dates %>% filter_all(any_vars(is.na(.))) 
+```
+
+```{r}
+#Summarize missing data issues
+f12_missingSum = f12_dates %>% summarize(ct = n(),
+                       day = sum(is.na(day)),
+                       FireYear = sum(is.na(fire_year)),
+                       gtp = sum(gt_probe=="y"),
+                       hit_rock = sum(hit_rock=="y"), 
+                       thaw_depth = sum(is.na(thaw_depth)),
+                       NoPair = sum(is.na(paired))
+                       ) %>%
+  mutate(submitNm = "Natali")
+```
+
+## 13. O'Donnell
+
+```{r}
+f13 <- read.csv(f[13], header = TRUE)
+f13
+```
+```{r}
+str(f13)
+```
+
+```{r}
+unique(f13$slope)
+
+f13$slope[f13$slope == "F"] <- "flat"
+f13$slope[f13$slope == "S"] <- "sloped"
+unique(f13$slope)
+```
+
+```{r}
+# fix incorrect logical columns
+f13$organic_depth <- as.numeric(gsub(">", "",f13$organic_depth))
+
+f13$thaw_depth <- as.numeric(gsub(">", "",f13$thaw_depth))
+
+f13 %>% distinct(site_id,year,month,day,fire_id,burn_unburn)
+```
+
+
+```{r}
+# Check na for specific columns
+f13 %>% filter(is.na(lat)) 
+f13 %>% filter(is.na(long)) 
+f13 %>% filter(is.na(year)) 
+f13 %>% filter(is.na(month))
+f13 %>% filter(is.na(day)) 
+f13 %>% filter(is.na(fire_year)) %>% filter(burn_unburn=="burned")
+f13 %>% filter(is.na(thaw_depth)) 
+```
+
+
+```{r}
+( 
+  f13_dates = f13 %>%
+  mutate(date = as.Date(with(., paste(year, month, day,sep="-")), "%Y-%m-%d")) %>%
+  mutate(msrDoy = yday(date)) %>%
+  mutate(paired = ifelse(site_id %in% c('ECLB', 'ECLC'), "m1",
+                  ifelse(site_id %in% c('ECHB',	'ECHC'), "m2",
+                  ifelse(site_id %in% c('HC03', 'HC93', 'HC90', 'HC67', 'HCCN'), "m3",
+                  ifelse(site_id %in% c('THNO', 'THNY', 'THNN', 'THNM'), "m4", "m5"))))) %>%
+    mutate(submitNm="O'Donnell")
+)
+```
+
+```{r}
+f13 %>% distinct(site_id, plot_id, fire_id, burn_unburn) 
+f13_dates %>% distinct(msrDoy, year, date)
+f13_dates %>% distinct(site_id, thaw_active, msrDoy, year, date)
+```
+
+```{r}
+#Summarize missing data issues
+f13_missingSum = f13_dates %>% summarize(ct = n(),
+                       day = sum(is.na(day)),
+                       FireYear = sum(is.na(fire_year)),
+                       gtp = sum(gt_probe=="y"),
+                       hit_rock = sum(hit_rock=="y"), 
+                       thaw_depth = sum(is.na(thaw_depth)),
+                       NoPair = sum(is.na(paired))
+                       ) %>%
+  mutate(submitNm = "O'Donnell")
+```
+
+## 14. Olefeldt
+
+```{r}
+f14 <- read.csv(f[14], header = TRUE)
+f14
+```
+
+
+
+```{r}
+# fix incorrect logical columns
+f14$slope <- read.csv(f[14], header = TRUE, colClasses = "character")[,20]
+
+# remove non-numeric characters from numeric vars
+# note we're loosing info on where Organic Layer Thickness is in excess of the entered value
+f14$organic_depth <- as.numeric(gsub(">", "",f14$organic_depth))
+
+f14 %>% distinct(site_id,year,month,day,fire_id,burn_unburn)
+```
+```{r}
+unique(f14$slope)
+
+f14$slope[f14$slope == "F"] <- "flat"
+
+unique(f14$slope)
+```
+```{r}
+# Check na for specific columns
+f14 %>% filter(is.na(lat)) 
+f14 %>% filter(is.na(long)) 
+f14 %>% filter(is.na(year)) 
+f14 %>% filter(is.na(month))
+f14 %>% filter(is.na(day)) 
+f14 %>% filter(is.na(fire_year)) %>% filter(burn_unburn=="burned")
+f14 %>% filter(is.na(thaw_depth)) 
+```
+
+
+```{r}
+str(f14)
+```
+
+```{r}
+(
+  f14_dates = f14 %>%
+  mutate(date = as.Date(with(., paste(year, month, day,sep="-")), "%Y-%m-%d")) %>%
+  mutate(msrDoy = yday(date)) %>%
+  mutate(paired = ifelse(site_id %in% c('camsell_1975', 'camsell_unburn'), "n1",
+                  ifelse(site_id %in% c('fortsimpson_1995',	'fortsimpson_2006', 'fortsimpson_unburn'), "n2",
+                  ifelse(site_id %in% c('kakisa_2014', 'kakisa_unburn'), "n3",
+                  ifelse(site_id %in% c('lutose_2000', 'lutose_2012', 'lutose_2019', 'lutose_unburn'), "n4",
+                  ifelse(site_id %in% c('samba_1967', 'samba_2013', 'samba_unburn'), "n5",
+                  ifelse(site_id %in% c('scotty_2014', 'scotty_unburn'), "n6", "n7"))))))) %>%
+  #dplyr::select(-fire_id) %>%
+    mutate(submitNm="Olefeldt") %>%
+    filter(!thaw_depth < 0) %>% # Remove Olefeldt negative measurements (also removes msrDepth with NA)
+  filter(!thaw_depth %in% c(4501, 453, 1032)) # Remove outliers from Olefeldt that are errors confirmed by email
+)
+```
+
+```{r}
+f14_dates %>% filter_all(any_vars(is.na(.))) 
+f14_dates %>% distinct(site_id, plot_id, burn_unburn) 
+f14_dates %>% distinct(msrDoy, year, date)
+f14_dates %>% filter(is.na(msrDoy))
+```
+
+```{r}
+#Summarize missing data issues
+f14_missingSum = f14_dates %>% summarize(ct = n(),
+                       day = sum(is.na(day)),
+                       FireYear = sum(is.na(fire_year)),
+                       gtp = sum(gt_probe=="y"),
+                       hit_rock = sum(hit_rock=="y"), 
+                       thaw_depth = sum(is.na(thaw_depth)),
+                       NoPair = sum(is.na(paired))
+                       ) %>%
+  mutate(submitNm = "Olefeldt")
+```
+
+## 15. Paulson
+
+```{r}
+f15 <- read.csv(f[15], header = TRUE)
+f15
+```
+
+```{r}
+unique(f15$slope)
+
+f15$slope[f15$slope == "F"] <- "flat"
+f15$slope[f15$slope == "S"] <- "sloped"
+unique(f15$slope)
+```
+```{r}
+# fix incorrect logical columns
+f15$thaw_active <- read.csv(f[15], header = TRUE, colClasses = "character")[,19]
+
+f15 %>% distinct(site_id,year,month,day,fire_id,burn_unburn)
+```
+
+```{r}
+str(f15)
+``` 
+
+```{r}
+# Check na for specific columns
+f15 %>% filter(is.na(lat)) 
+f15 %>% filter(is.na(long)) 
+f15 %>% filter(is.na(year)) 
+f15 %>% filter(is.na(month))
+f15 %>% filter(is.na(day)) 
+f15 %>% filter(is.na(fire_year)) 
+f15 %>% filter(is.na(thaw_depth)) 
+```
+
+
+```{r}
+( 
+  f15_dates = f15 %>%
+  mutate(date = as.Date(with(., paste(year, month, day,sep="-")), "%Y-%m-%d")) %>%
+  mutate(msrDoy = yday(date)) %>%
+  dplyr::select(-notes) %>%
+  mutate(paired = ifelse(site_id %in% c('alnus'), "o1",
+                  ifelse(site_id %in% c('ans'), "o2",
+                  ifelse(site_id %in% c('bp'), "o3",
+                  ifelse(site_id %in% c('cn'), "o4",
+                  ifelse(site_id %in% c('foc'), "o5",
+                  ifelse(site_id %in% c('fn'), "o6",
+                  ifelse(site_id %in% c('gonzo'), "o7",
+                  ifelse(site_id %in% c('hr'), "o8",
+                  ifelse(site_id %in% c('shark'), "o9",
+                  ifelse(site_id %in% c('frk'), "o10",
+                  ifelse(site_id %in% c('maya'), "o11",
+                  ifelse(site_id %in% c('korova'), "o12", "o13"))))))))))))) %>%
+    mutate(submitNm="Paulson")
+)
+```
+
+```{r}
+f15_dates %>% distinct(site_id, plot_id, fire_id, burn_unburn) 
+f15_dates %>% distinct(msrDoy, year, date)
+```
+
+```{r}
+#Summarize missing data issues
+f15_missingSum = f15_dates %>% summarize(ct = n(),
+                       day = sum(is.na(day)),
+                       FireYear = sum(is.na(fire_year)),
+                       gtp = sum(gt_probe=="y"),
+                       hit_rock = sum(hit_rock=="y"), 
+                       thaw_depth = sum(is.na(thaw_depth)),
+                       NoPair = sum(is.na(paired))
+                       ) %>%
+  mutate(submitNm = "Paulson")
+```
+
+## 16. Rocha
+
+```{r}
+f16 <- read.csv(f[16], header = TRUE)
+f16
+```
+```{r}
+f16 %>% filter(is.na(thaw_depth))
+```
+
+
+
+```{r}
+# fix incorrect logical columns
+f16$slope <- read.csv(f[16], header = TRUE, colClasses = "character")[,20]
+# organic depth is missing, but set to NA
+f16$organic_depth <- as.numeric(f16$organic_depth)
+# convert thaw depth to numeric - blank cells have a period, and will be converted to NA
+f16$thaw_depth <- as.numeric(f16$thaw_depth)
+f16$fire_year[f16$site_id == "Anaktuvuk River fire"] <- 2007
+```
+```{r}
+unique(f16$slope)
+
+f16$slope[f16$slope == "F"] <- "flat"
+f16$slope[f16$slope == "S"] <- "sloped"
+unique(f16$slope)
+```
+```{r}
+# Check na for specific columns
+f16 %>% filter(is.na(lat)) 
+f16 %>% filter(is.na(long)) 
+f16 %>% filter(is.na(year)) 
+f16 %>% filter(is.na(month))
+f16 %>% filter(is.na(day)) 
+f16 %>% filter(is.na(fire_year)) %>% filter(burn_unburn =="burned")
+f16 %>% filter(is.na(thaw_depth)) 
+```
+
+```{r}
+missingDepth = f16 %>% filter(is.na(thaw_depth))
+```
+```{r}
+write_csv(missingDepth, '../outputs/RochaMissingDepth.csv')
+```
+
+```{r}
+str(f16)
+```
+
+```{r}
+(
+  f16_dates = f16 %>%
+  mutate(date = as.Date(with(., paste(year, month, day,sep="-")), "%Y-%m-%d")) %>%
+  mutate(msrDoy = yday(date)) %>%
+  dplyr::select(-notes) %>%
+  mutate(paired = ifelse(site_id %in% c('ARF Severe', 'ARF Moderate', 'ARF Unburned'), "p1",
+                  ifelse(site_id %in% c('Kuparuk Burned',	'Kuparuk Unburned'), "p2",
+                  ifelse(site_id %in% c('DCKN Burned', 'DCKUN Unburned'), "p3",
+                  ifelse(site_id %in% c('Kokolik Burned',	'Kokolik Unburned'), "p4",
+                  ifelse(site_id %in% c('Jones Old Burn', 'Jones Old Burn'), "p5", "p6")))))) %>%
+    mutate(submitNm="Rocha")
+)
+```
+```{r}
+f16_dates %>% filter(site_id=="ARF Severe")
+```
+```{r}
+f16_dates %>% distinct(site_id, plot_id, fire_id, burn_unburn) 
+f16_dates %>% distinct(msrDoy, year, date)
+```
+
+```{r}
+#Summarize missing data issues
+f16_missingSum = f16_dates %>% summarize(ct = n(),
+                       day = sum(is.na(day)),
+                       FireYear = sum(is.na(fire_year)),
+                       gtp = sum(gt_probe=="y"),
+                       hit_rock = sum(hit_rock=="y"), 
+                       thaw_depth = sum(is.na(thaw_depth)),
+                       NoPair = sum(is.na(paired))
+                       ) %>%
+  mutate(submitNm = "Rocha")
+```
+
+## 17. Sizov
+
+```{r}
+f17 <- read.csv(f[17], header = TRUE)
+f17
+```
+```{r}
+# fix slope, which was read as logical
+f17$slope <- read.csv(f[17], header = TRUE, colClasses = "character")[,20]
+
+str(f17)
+```
+
+```{r}
+unique(f17$slope)
+
+f17$slope[f17$slope == "F"] <- "flat"
+f17$slope[f17$slope == "S"] <- "sloped"
+unique(f17$slope)
+```
+
+```{r}
+# Check na for specific columns
+f17 %>% filter(is.na(lat)) 
+f17 %>% filter(is.na(long)) 
+f17 %>% filter(is.na(year)) 
+f17 %>% filter(is.na(month))
+f17 %>% filter(is.na(day)) 
+f17 %>% filter(is.na(fire_year)) 
+f17 %>% filter(is.na(thaw_depth)) 
+```
+
+
+```{r}
+(
+  f17_dates = f17 %>%
+  mutate(date = as.Date(with(., paste(year, month, day,sep="-")), "%Y-%m-%d")) %>%
+  mutate(msrDoy = yday(date)) %>%
+  dplyr::select(-notes) %>%
+    mutate(paired = "q1") %>%
+    mutate(submitNm="Sizov")
+  )
+```
+
+```{r}
+f17_dates %>% distinct(site_id, plot_id, fire_id, burn_unburn) 
+f17_dates %>% distinct(msrDoy, year, date)
+```
+
+```{r}
+#Summarize missing data issues
+f17_missingSum = f17_dates %>% summarize(ct = n(),
+                       day = sum(is.na(day)),
+                       FireYear = sum(is.na(fire_year)),
+                       gtp = sum(gt_probe=="y"),
+                       hit_rock = sum(hit_rock=="y"), 
+                       thaw_depth = sum(is.na(thaw_depth)),
+                       NoPair = sum(is.na(paired))
+                       ) %>%
+  mutate(submitNm = "Sizov")
+```
+
+## 18. Delcourt - Veraverbeke
+
+```{r}
+f18 <- read.csv(f[18], header = TRUE)
+f18
+```
+```{r}
+str(f18)
+```
+
+```{r}
+unique(f18$slope)
+
+f18$slope[f18$slope == "F"] <- "flat"
+f18$slope[f18$slope == "S"] <- "sloped"
+unique(f18$slope)
+```
+
+```{r}
+# fix incorrect logical columns
+#f18$thaw_active <- read.csv(f[18], header = TRUE, colClasses = "character")[,19]
+```
+
+```{r}
+
+f18
+```
+```{r}
+# Check na for specific columns
+f18 %>% filter(is.na(lat)) 
+f18 %>% filter(is.na(long)) 
+f18 %>% filter(is.na(year)) 
+f18 %>% filter(is.na(month))
+f18 %>% filter(is.na(day)) 
+f18 %>% filter(is.na(fire_year)) 
+f18 %>% filter(is.na(thaw_depth)) 
+```
+
+
+```{r}
+(
+  f18_dates = f18 %>%
+  mutate(date = as.Date(with(., paste(year, month, day,sep="-")), "%Y-%m-%d")) %>%
+  mutate(msrDoy = yday(date)) %>%
+  drop_na((lat))  %>%
+  #mutate(paired = ifelse(plot_id %in% c('YE001B', 'YE016C'), "r1",
+                 # ifelse(plot_id %in% c('YE002B',	'YE017C'), "r2",
+                 # ifelse(plot_id %in% c('YE003B', 'YE014C'), "r3",
+                  #ifelse(plot_id %in% c('YE014C',	'YE022C'), "r4",
+                 # ifelse(plot_id %in% c('YE006B', 'YE007B',	'YE013C'), "r5",
+                 # ifelse(plot_id %in% c('YE009B', 'YE010B', 'YE011B', 'YE012B', 'YE016C'), "r6", "r7"))))))) %>%
+    mutate(submitNm="Delcourt") %>%
+    select(-slope_deg)
+)
+```
+
+```{r}
+f18_dates %>% distinct(site_id, plot_id, fire_id, burn_unburn) 
+f18_dates %>% distinct(msrDoy, year, date)
+```
+
+```{r}
+#Summarize missing data issues
+f18_missingSum = f18_dates %>% summarize(ct = n(),
+                       day = sum(is.na(day)),
+                       FireYear = sum(is.na(fire_year)),
+                       gtp = sum(gt_probe=="y"),
+                       hit_rock = sum(hit_rock=="y"), 
+                       thaw_depth = sum(is.na(thaw_depth)),
+                       NoPair = sum(is.na(paired))
+                       ) %>%
+  mutate(submitNm = "Delcourt")
+```
+
+# Match Data structure across dataframes 
+
+```{r}
+glimpse(f1_dates)
+glimpse(f2_dates)
+glimpse(f3_dates)
+glimpse(f4_dates)
+glimpse(f5_dates)
+glimpse(f6_dates)
+glimpse(f7_dates)
+glimpse(f8_dates)
+glimpse(f9_dates)
+glimpse(f10_dates)
+glimpse(f11_dates)
+glimpse(f12_dates)
+glimpse(f13_dates)
+glimpse(f14_dates)
+glimpse(f15_dates)
+glimpse(f16_dates)
+glimpse(f17_dates)
+glimpse(f18_dates)
+
+```
+
+# Function to clean
+```{r}
+clean <- function(df){ df %>%
+  mutate(across(c(plot_id, site_id, fire_id), as.character)) %>% 
+  mutate(across(c(fire_year, organic_depth, day), as.numeric)) %>% 
+    mutate(across(c(fire_year, organic_depth, day), ~replace(., is.na(.), -9999))) %>%
+    mutate(across(day, ~coalesce(., 0))) %>%
+  rename(plotId = plot_id,
+         siteId = site_id, 
+         biome=boreal_tundra,
+         distur = burn_unburn,
+         cntryId = country_code, 
+         fireYr = fire_year,
+         gtProbe = gt_probe,
+         hitRock = hit_rock,
+         lastNm = last_name, 
+         lon=long, 
+         vegCvr = veg_cover_class,  
+         fireId = fire_id,  
+         orgDpth = organic_depth, 
+         msrDepth = thaw_depth,   
+         msrType = thaw_active, 
+         topoPos = topo_position, 
+         srfH2O = surface_water) %>%
+    mutate(msrType = as.character(msrType)) %>%
+    dplyr::select(plotId, siteId, cntryId, lastNm, submitNm, lat, lon, year, month, day, biome, distur, fireYr, fireId, paired, gtProbe, hitRock, orgDpth, srfH2O, topoPos, slope, vegCvr, msrDoy, msrType, msrDepth) %>%
+  mutate(msrType = recode_factor(msrType , "T" = "thaw", "TRUE"= "thaw", A = "active")) %>%
+    #mutate(slope = recode_factor(slope, "F" = "flat", S = "sloped", f = "flat", s = "sloped")) %>%
+  mutate(biome = recode_factor(biome, B = "boreal", boreal = "boreal", "T" = "tundra", tundra = "tundra")) %>%
+  mutate(distur = recode_factor(distur, burned = "burned", burn = "burned", Burned = "burned", Burn = "burned", '72burn' = "burned", Unburn = 'unburned', Unburned = 'unburned', unburn = 'unburned', unburned = 'unburned'))
+}
+
+```
+
+
+## Apply clean function
+
+```{r}
+f1_clean = clean(f1_dates)
+f2_clean = clean(f2_dates)
+f3_clean = clean(f3_dates)
+f4_clean = clean(f4_dates)
+f5_clean = clean(f5_dates)
+f6_clean = clean(f6_dates)
+f7_clean = clean(f7_dates)
+f8_clean = clean(f8_dates)
+f9_clean = clean(f9_dates)
+f10_clean = clean(f10_dates)
+f11_clean = clean(f11_dates)
+f12_clean = clean(f12_dates)
+f13_clean = clean(f13_dates)
+f14_clean = clean(f14_dates)
+f15_clean = clean(f15_dates)
+f16_clean = clean(f16_dates)
+f17_clean = clean(f17_dates)
+f18_clean = clean(f18_dates)
+```
+
+```{r}
+glimpse(f1_clean)
+glimpse(f2_clean)
+glimpse(f3_clean)
+glimpse(f4_clean)
+glimpse(f5_clean)
+glimpse(f6_clean)
+glimpse(f7_clean)
+glimpse(f8_clean)
+glimpse(f9_clean)
+glimpse(f10_clean)
+glimpse(f11_clean)
+glimpse(f12_clean)
+glimpse(f13_clean)
+glimpse(f14_clean)
+glimpse(f15_clean)
+glimpse(f16_clean)
+glimpse(f17_clean)
+glimpse(f18_clean)
+
+```
+
+
+# Combine into one dataframe
+
+```{r}
+dataset = dplyr::bind_rows(f1_clean, f2_clean, f3_clean, f4_clean, f5_clean, f6_clean, f7_clean, f8_clean, f9_clean, f10_clean, f11_clean, f12_clean, f13_clean, f14_clean, f15_clean, f16_clean, f17_clean, f18_clean)
+```
+
+```{r}
+dataset$fireYr[dataset$siteId == "Anaktuvuk River fire"] <- 2007
+dataset$fireYr[dataset$siteId == "Jones Old Burn"] <- 1900
+dataset$distur[dataset$siteId == "lutose_unburn"] <- "unburned"
+```
+
+```{r}
+dataset
+```
+```{r}
+unique(dataset$msrType)
+```
+
+```{r}
+dataset %>% group_by(fireYr, fireId) %>% summarise(n = n()) %>% filter(fireYr != -9999)
+```
+
+Contributed data 52,468 rows
+```{r}
+colnames(dataset)
+
+```
+
+## Check Missing Day of month
+
+```{r}
+( nadoy = dataset %>% filter(is.na(msrDoy)) )
+```
+
+```{r}
+unique(nadoy$submitNm)
+
+dataset %>% filter(submitNm =="Dieleman")
+```
+
+## Check and fix factors
+
+```{r}
+unique(dataset$hitRock)
+unique(dataset$gtProbe)
+```
+
+```{r}
+dataset$hitRock[dataset$hitRock==""]<-"n"
+dataset$gtProbe[dataset$gtProbe==""]<-"n"
+dataset$gtProbe[is.na(dataset$gtProbe)]<-"n"
+```
+
+df[is.na(df)] 
+```{r}
+unique(dataset$hitRock)
+unique(dataset$gtProbe)
+```
+
+## Summarize missing data
+
+```{r}
+missingDataSummary = dplyr::bind_rows(f1_missingSum, f2_missingSum, f3_missingSum, f4_missingSum, f5_missingSum, f6_missingSum, f7_missingSum, f8_missingSum, f9_missingSum, f10_missingSum, f11_missingSum, f12_missingSum, f13_missingSum, f14_missingSum, f15_missingSum, f16_missingSum, f17_missingSum, f18_missingSum)
+```
+
+```{r}
+missingDataSummary
+```
+
+```{r eval=FALSE, include=FALSE}
+write_csv(missingDataSummary, '../outputs/dataset/PermafrostFireContributedDataMissingDataSummary.csv')
+```
+
+## Save contributed data
+
+Contributed data 52,468 rows
+
+```{r eval=FALSE, include=FALSE}
+write_csv(dataset, '../outputs/dataset/PermafrostFireContributedData.csv')
+```
+
+## Final clean for predicting
+Contributed data 52,468 rows
+- remove missing Lat/Lon
+- remove missing paired
+- remove rock hits
+- remove greater than probe
+- remove missing depth measurements
+- remove missing day of month
+
+```{r}
+dataset %>% filter(if_any(paired, is.na)) #300
+dataset %>% filter(hitRock == "y" ) #853
+dataset %>% filter(gtProbe == "y" ) #2237
+dataset %>% filter(if_any(msrDepth, is.na)) #440
+dataset %>% filter(day==-9999) #903
+```
+
+```{r}
+( datasetFinal = dataset %>% 
+    #drop_na(paired) %>% 
+    filter(!is.na(msrDoy)) %>% 
+    filter(!is.na(msrDepth)) %>%
+    filter(hitRock != "y" ) %>% 
+    filter(gtProbe != "y" ) 
+)
+```
+Data cube to predict on 48166 rows
+
+### Summary of data removed
+```{r}
+( difference = setdiff(dataset,datasetFinal) )
+
+```
+
+```{r}
+( gtProbeY = difference %>% 
+    group_by(submitNm) %>%
+  count(submitNm,gtProbe, hitRock) 
+)
+```
+
+
+```{r}
+difference %>% 
+  dplyr::select(submitNm, paired, gtProbe, hitRock) %>%
+  pivot_longer(!submitNm, names_to = "name", values_to = "value") %>%
+    group_by(submitNm, name)  %>%
+  count(name, value) %>%
+  pivot_wider(names_from = name, values_from = c(value, n))
+
+```
+
+```{r}
+(pair = dataset %>% filter(is.na(paired)) %>% dplyr::select(plotId, siteId, submitNm, paired) %>% group_by(plotId, siteId, submitNm) %>% summarize(n_paired = n()))
+msrDoy = dataset %>% filter(is.na(msrDoy))  
+msrDepth = dataset %>% filter(is.na(msrDepth))
+hitrock = dataset %>% filter(hitRock == "y" )  
+gtprobe = dataset %>%filter(gtProbe == "y" ) 
+```
+## Save as csv
+
+```{r eval=FALSE, include=FALSE}
+write_csv(datasetFinal, '../outputs/dataset/PermafrostFiredataset.csv')
+```
+
+# Create points shapefile
+
+## Function to make points
+```{r}
+df_to_sf <- function(x){
+  st_as_sf(x, coords = c("lon","lat"), crs = 4326, remove = FALSE)
+}
+```
+
+## Drop Lat Lon NA and convert to shapefile 
+
+```{r}
+( datasetPts = datasetFinal %>% 
+    df_to_sf() )
+```
+
+
+
+With missing day removed 51,565 rows
+```{r}
+glimpse(datasetPts)
+```
+```{r}
+unique(datasetPts$msrType)
+```
+
+## write to shapefile
+```{r eval=FALSE, include=FALSE}
+st_write(datasetPts, "../outputs/dataset/2024-02-21_PermafrostFireDataset.shp", driver="ESRI Shapefile")
+```
+
+
