@@ -2,16 +2,9 @@
   {
     "listing": "/posts.html",
     "items": [
-      "/posts/arctic-infographic/data/PairsAggregate.html",
       "/posts/thomas-fire-exercises.html",
       "/posts/arctic-infographic/Polar.html",
-      "/posts/arctic-infographic/data/DataCleanPointCombine.html",
-      "/posts/arctic-infographic/data/SpatialAdds.html",
-      "/posts/arctic-infographic/data/ERA5GeeScript.html",
-      "/posts/arctic-infographic/data/ERA5CleanOrganizeData.html",
-      "/posts/arctic-infographic/data/EstimateALT.html",
-      "/posts/green-hydrogen-blog/green_hydro.html",
-      "/posts/arctic-infographic/data/PlotLevelAggregate.html"
+      "/posts/green-hydrogen-blog/green_hydro.html"
     ]
   }
 ]

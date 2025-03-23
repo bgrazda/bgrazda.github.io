@@ -14,12 +14,12 @@ image: greenland-sea.avif
 
 When given the opportunity to pick any data source to visualize in an infographic format, I knew that I wanted to do something "cool..."
 
-Puns aside, I have always been fascinated with Arctic (even before I adopted Isla, my pet Husky). Climate change is the focal point of my academic and professional interests. With that being said, I knew the findings would be alarming when I first began visualizing arctic data. The Arctic is home to so many fragile and critical ecosystems that are essential indicators of global climate health. While it was apparent to me from the getgo, I was still shocked to see such drastic changes over many years.
+Puns aside, I have always been fascinated with Arctic (even before I adopted Isla, my pet Husky). Climate change is the focal point of my academic and professional interests. With that being said, I knew the findings would be alarming when I first began visualizing arctic data. The Arctic is home to so many fragile and critical ecosystems that are essential indicators of global climate health. While it was apparent to me from the getgo, I was still shocked to see such drastic changes over many years. As a former environmental educator, I wanted to aim this infographic to students or anybody that would be interested in exploring this topic.
 
 I began with the question: how has Arctic sea ice changed in the last 40 years? This is a very broad question, and there are likely innumerable different pathways to which this question could be answered. Using the NOAA database, I came across a zip file that had so much data on sea ice extent, going all the way back to 1980. I also found a supplementary dataset from the NSF Arctic Data Center on arctic permafrost active layer thickness. The goal of my visualization was to not only answer this question, but tell a visually pleasing, data-driven story about climate change. I was only just dipping my toes in this data, and it was just the tip of the iceberg.
 
 ## Infographic
-![Infographic: Breaking the Ice - Data Visualizations on sea ice extent and permafrost active layer](breaking_the_ice_infographic.png)
+![Infographic: Breaking the Ice - Data Visualizations on sea ice extent and permafrost active layer](sea_ice_decline_final2_info.png)
 
 ## The Process
 While I am no expert in arctic data, I sure did have fun making these visualizations! My dataset from NOAA came with monthly images of the arctic circle, so I turned it into a gif using the following code and attached it to the top of this blog post.
@@ -34,7 +34,7 @@ One of the hardest decisions to make in this exercise was choosing a typeface. T
 
 When putting it all on the infographic, it made sense for me to combine the two plots that showed the NOAA sea ice extent data in a stacked format. This gave me limited space on the left to tell the story of permafrost and how it relates to sea ice extent reduction. The underpinning factor in all of my plots is climate change, so I framed each textbox to highlight different aspects of this. My main takeaway is in slightly larger at the bottom, with the entire graphic intentionally meant to be read top to bottom, left to right. This primary message was that this arctic sea ice dilemma is startling because of its furthering impacts on climate change. The organic carbon stored in arctic permafrost releases into the atmosphere once it is exposed through the active layer thickening. The reduction in sea ice is meant to provide context for how fast and when this sea ice changes the most.
 
-I wanted to frame my question as broadly as possible, and while this data is quite quantitative, the ecosystems and communities that live in these environments are experiencing and seeing these changes firsthand. It is one thing to look at a dataset and visualize it, but to experience such loss is a tragedy that is often overlooked and understudied. I hope that these visualizations are able to provide the viewer with context and inspire an initiative to further the conversation about hwo climate change is impacting communities in different aways, around the globe.
+I wanted to frame my question as broadly as possible, and while this data is quite quantitative, the ecosystems and communities that live in these environments are experiencing and seeing these changes firsthand. It is one thing to look at a dataset and visualize it, but to experience such loss is a tragedy that is often overlooked and understudied. I hope that these visualizations are able to provide the viewer with context and inspire an initiative to further the conversation about how climate change is impacting communities in different ways around the globe.
 
 Please see below to explore my full code!
 
