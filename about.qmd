@@ -5,6 +5,7 @@ about:
   template: jolla
   image-shape: rectangle
   image-width: 20em
+title-block-banner: true
 ---
 ## Wearing many hats—and making them work together
 

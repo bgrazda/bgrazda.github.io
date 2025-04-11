@@ -8,6 +8,7 @@ execute:
   message: false
   eval: true
 image: greenland-sea.avif
+title-block-banner: true
 ---
 # Breaking the Ice: Arctic Warming
   ![Arctic sea ice extent from 1800s to present](movie.gif)

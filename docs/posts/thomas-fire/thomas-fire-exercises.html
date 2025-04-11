@@ -57,22 +57,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="../site_libs/quarto-nav/headroom.min.js"></script>
-<script src="../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="../site_libs/quarto-search/fuse.min.js"></script>
-<script src="../site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="../">
-<script src="../site_libs/quarto-html/quarto.js"></script>
-<script src="../site_libs/quarto-html/popper.min.js"></script>
-<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="../site_libs/quarto-html/anchor.min.js"></script>
-<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -111,10 +111,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a href="../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../images/new_logo_04_11.png" alt="" class="navbar-logo">
+    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../images/new_logo_04_11.png" alt="" class="navbar-logo">
     </a>
-    <a class="navbar-brand" href="../index.html">
+    <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">Brooke Grazda</span>
     </a>
   </div>
@@ -125,15 +125,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../index.html"> 
+    <a class="nav-link" href="../../index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../about.html"> 
+    <a class="nav-link" href="../../about.html"> 
 <span class="menu-text">About</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../posts.html"> 
+    <a class="nav-link" href="../../posts.html"> 
 <span class="menu-text">Data Science Projects</span></a>
   </li>  
 </ul>
@@ -192,15 +192,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h4 class="anchored" data-anchor-id="author-brooke-grazda">Author: Brooke Grazda</h4>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="images/sb-2017-thomas-fire.jpeg" class="img-fluid figure-img"></p>
+<p><img src="posts/thomas-fire/sb-2017-thomas-fire.jpeg" class="img-fluid figure-img"></p>
 <figcaption>Thomas Fire</figcaption>
 </figure>
 </div>
 </section>
 <section id="exercise-1-visualizing-aqi-during-the-2017-thomas-fire-in-santa-barbara-county" class="level2">
 <h2 class="anchored" data-anchor-id="exercise-1-visualizing-aqi-during-the-2017-thomas-fire-in-santa-barbara-county">Exercise 1: Visualizing AQI during the 2017 Thomas Fire in Santa Barbara County</h2>
-<p>This analysis aims to visualize the impacts and spread of the Thomas Fire utilizing the <code>pandas</code> library, practicing with subsetting values related to AQI.</p>
-<p><strong>About:</strong> The 2017 Thomas Fire was the largest wildfire that California had seen at the time. It expanded and scorched 281,893 acres across Santa Barbara and Ventura Counties, and had immediate impacts on air quality and existing habitat.</p>
+<p><strong>About:</strong>This analysis aims to visualize the impacts and spread of the Thomas Fire utilizing the <code>pandas</code> library, practicing with subsetting values related to AQI.</p>
+<p>The 2017 Thomas Fire was the largest wildfire that California had seen at the time. It expanded and scorched 281,893 acres across Santa Barbara and Ventura Counties, and had immediate impacts on air quality and existing habitat.</p>
 <p><strong>Highlights:</strong> This analysis practices important techniques such as joining dataframes in pandas using the <code>concat()</code> function. This allows us to aggregate two data frames in an outer join to look at data more broadly. Another technique that is useful in this exercise is the <code>to_datetime()</code> method in pandas. After exploring the data, we can see that the date column is a listed as a string object, which is not suitable for plotting temporal data. This method then allows us to use <code>set_index()</code> to the date. The last step before plotting is crucial to our analysis and visualization because we do not want to see every single date object in the dataframe. Instead, we can use the <code>rolling()</code> method to specify that we want to take the rolling average over five days. In order to do this, we must select the column that holds the air quality data, <code>aqi</code> and apply the <code>rolling()</code> method, passing in the argument for 5 days. We can then specify that we want to take the <code>mean()</code>.</p>
 <p><strong>Dataset descriptions:</strong> I am using the <a href="https://www.airnow.gov/aqi/aqi-basics/">Air Quality Index (AQI)</a> from the Environmental Protection Agency to visualize the impact on the AQI of the 2017 <a href="https://en.wikipedia.org/wiki/Thomas_Fire">Thomas Fire</a> in Santa Barbara County.</p>
 <p><a href="https://github.com/bgrazda/thomas-fire.git">Link to Github repository:</a></p>
