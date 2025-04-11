@@ -7,12 +7,12 @@ execute:
   warning: false
   message: false
   eval: true
-image: Green-Hydrogen.jpg
+image: electrolysis.jpg
 ---
 
-**Background:** Hydrogen fuel cells powered by solar and wind power is a huge possibility in the transition for a low carbon society. The Biden administration invested \$7 billion in seven green hydrogen hub projects as a pathway for decarbonization and potentially reaching net zero emissions by 2050.
+Hydrogen fuel cells powered by solar and wind power is a huge possibility in the transition for a low carbon society. The Biden administration invested \$7 billion in seven green hydrogen hub projects as a pathway for decarbonization and potentially reaching net zero emissions by 2050.
 
-Electrolysis is the process in which electricity is used to split water molecules into hydrogen and oxygen. There are several potential health implications for this energy process, when powered by natural gas. This process by which steam methane reforming is used emits potent greenhouse gases.
+**Background:** Electrolysis is the process in which electricity is used to split water molecules into hydrogen and oxygen. There are several potential health implications for this energy process, when powered by natural gas. This process by which steam methane reforming is used emits potent greenhouse gases.
 
 However, electrolysis can also be fueled by renewable power. This is known as *green hydrogen,* and it does not require fossil fuels nor results in greenhouse gas emissions. According to the Natural Resources Defense Council (NRDC), 'while the technology is still in the early stages, falling renewable energy prices, along with the decreasing costs of the electrolyzers themselves and the clean hydrogen tax credit within the Inflation Reduction Act (IRA), could make this type of electrolysis cost competitive with other methods" (NRDC).
 
@@ -47,7 +47,8 @@ options(scipen = 999)
 ```{r}
 #| output: false
 #| quiet: true
-#| 
+ #| code-fold: true
+#| code-summary: 'Display Code'
 solar_h2_potential <- read_csv(here('posts', 'green-hydrogen-blog', 'data', 'H2_Potential_from_Solar', 'H2_Potential_from_Solar.csv'))
 wind_h2_potential <- read_csv(here('posts', 'green-hydrogen-blog','data', 'H2_Potential_from_Wind', 'H2_Potential_from_Wind.csv'))
 ```
@@ -65,6 +66,9 @@ For onshore and offshore wind, the metadata identifies that the wind power uses 
 In this code chunk, I began with a full join of both my solar hydrogen potential and wind hydrogen potential dataframes. For consistency, I used `clean_names()` with the `janitor` package. Both dataframes are organized by state, area in square km, population in 2010, and hydrogen potential in kg per year. I grouped by state so that I could take the sum of each column that I am interested in, removing all `NA` values. I made sure to `ungroup()` to avoid errors later on. I needed to pivot my data frame into utility potential in kg per year and type of renewable resource that produced the hydrogen.
 
 ```{r}
+#| warning: false
+#| code-fold: true
+#| code-summary: 'Display Code'
 h2_potential <- full_join(solar_h2_potential, wind_h2_potential) |> 
   clean_names() |> 
    group_by(state) |> 
@@ -96,6 +100,8 @@ H~A~: Type of renewable energy source has an effect on hydrogen fuel potential.
 ## Test Statistic: Difference of means
 
 ```{r}
+#| code-fold: true
+#| code-summary: 'Display Code'
 utility <- h2_potential |> 
   group_by(type) |> 
   summarize(avg_potential = mean(h2_potential_kg_yr))
@@ -106,6 +112,8 @@ point_estimate_h2
 ```
 
 ```{r}
+#| code-fold: true
+#| code-summary: 'Display Code'
 null_dist <- replicate(1000, {
   utility <- h2_potential |> 
   mutate(type = sample(type, n())) |> 
@@ -132,6 +140,8 @@ To quantify the uncertainty, I created a null distribution as seen above, and ma
 ## P-Value
 
 ```{r}
+#| code-fold: true
+#| code-summary: 'Display Code'
 sum(abs(null_dist) > abs(point_estimate_h2)) / 
   length(null_dist)
 ```
@@ -145,6 +155,8 @@ Based on the results of the analysis, I reject the null hypothesis that the type
 Now, we want to know how the type of source and population influence the hydrogen fuel potential using a linear model. I decided to use a linear regression model because my dependent variable is numerically trying to predict the hydrogen potential based on population and source type. The two predictors are population in 2010 and source type, which are continuous and categorical.
 
 ```{r}
+#| code-fold: true
+#| code-summary: 'Display Code'
 # Fit linear model
 linear_model <- summary(lm(h2_potential_kg_yr ~ population_in_2010 + type, data = h2_potential))
 
@@ -154,17 +166,38 @@ print(linear_model)
 *Note* the R-squared here is 0.3048. Pretty low, right? Let's look at the plot and then we can consider an omitted variable bias.
 
 ```{r}
+#| code-fold: true
+#| code-summary: 'Display Code'
 # Examine the p-values for the "2010 population" and "type" coefficients
 ggplot(h2_potential, aes(population_in_2010,
                          h2_potential_kg_yr,
                          color = factor(type))) +
-  geom_point() +
-  geom_smooth(se =FALSE, method = 'lm') +
+  geom_point(size = 2, alpha = 0.7) +
+  geom_smooth(se = FALSE, method = 'lm', linetype = "dashed", size = 1) +
+  scale_color_manual(values = c(
+      "pv_solar" = "orange",
+      "wind_onshore_offshore" = "cornflowerblue"
+    ),
+    labels = c(
+      "pv_solar" = "Solar",
+      "wind_onshore_offshore" = "Land and Offshore Wind")) +
+ scale_y_continuous(labels = scales::label_number(scale = 1e-3, suffix = "K")) + # alternative
   theme_light() +
   labs(title = 'Green Hydrogen Fuel Potential \nin the United States using 2010 Population',
        x = 'Population in 2010',
        y = 'Hydrogen Potential (kg/year)',
-       color = 'Type of Renewable Energy Source')
+       color = 'Type of Renewable Energy Source') +
+  theme(plot.title = element_text(size = 14, face = "bold", lineheight = 1.2),
+        axis.title = element_text(size = 12),
+        axis.text = element_text(size = 10)) +
+  theme(legend.position = 'bottom')
+  # geom_point() +
+  # geom_smooth(se =FALSE, method = 'lm') +
+  # theme_light() +
+  # labs(title = 'Green Hydrogen Fuel Potential \nin the United States using 2010 Population',
+  #      x = 'Population in 2010',
+  #      y = 'Hydrogen Potential (kg/year)',
+  #      color = 'Type of Renewable Energy Source') 
 
 ```
 
@@ -183,6 +216,8 @@ Now, that we have seen that solar has a greater overall potential for producing 
 Note: The raw data is listed in kg per year, indicating that this is the *Total Hydrogen Potential* as opposed to the Normalized potential, which would be in kg/yr/~km~2. With this in mind, it is fair to test if there is an omitted variable bias for area by state due to it not being included to calculate the potential itself.
 
 ```{r}
+#| code-fold: true
+#| code-summary: 'Display Code'
 fit2 <- lm(h2_potential_kg_yr ~ population_in_2010 + type + area_sq_km, data = h2_potential)
 summary(fit2)
 
@@ -191,6 +226,8 @@ summary(fit2)
 **Here** we see that the adjusted R-squared is 0.385. While this correlation is still fairly weak,it increased when area was added. This leads me to believe that perhaps there still is an omitted variable bias that is not included in the data. For future studies, it may be valuable to use data on solar radiation or average wind speeds in each of these states and compare separately by type.
 
 ```{r}
+#| code-fold: true
+#| code-summary: 'Display Code'
 h2_potential |> 
   filter(type == 'wind_onshore_offshore') |> 
   ggplot(aes(x = area_sq_km, 
@@ -206,6 +243,8 @@ h2_potential |>
 Because our previous combined plot was hard to decipher the values for wind hydrogen potential, I wanted to examine the relationship between just wind and area, and just wind and population in 2010. Using `geom_smooth()` it is clear that the line is less steep and positive. Let's look at the distribution between population and Hydrogen potential.
 
 ```{r}
+#| code-fold: true
+#| code-summary: 'Display Code'
 h2_potential |> 
   filter(type == 'wind_onshore_offshore') |> 
   ggplot(aes(x = population_in_2010, 
@@ -222,6 +261,8 @@ h2_potential |>
 Here, we can see that the slope is more positive and looks generally more normally distributed. This makes sense because the population sizes are dynamic while state area is a fixed value per state.
 
 ```{r}
+#| code-fold: true
+#| code-summary: 'Display Code'
 h2_potential |> 
   filter(type == 'pv_solar') |> 
   ggplot(aes(x = area_sq_km, 
@@ -240,6 +281,10 @@ Out of curiosity, I wanted to see the distribution of area and hydrogen potentia
 ## Limitations
 
 This study is limited by the scope of the data. Considering that the data includes the population from 2010, the values of hydrogen potential and population have likely had significant changes since then. The sampling strategy of the data utilized satellite imagery and identified land areas that are designated for wind and solar production, and eliminated small clean energy wind and solar plants that would not generate enough energy to power the hydrogen plants. The limitations of this are that there is not a ton of explanation further about the data and it is generally not clear about their inclusions other than these existing technology designations and the conversion rate. With the new presidency, there may be less incentives for green hydrogen and further studies may need to be conducted to predict more updated potential values.
+
+## Assumptions
+
+This data assumes that green hydrogen is produced purely through electrolysis, without any dirty methods of producing energy involved. It should be noted that many hydrogen projects being developed are often times not purely generated through electrolysis, and thus has adverse health and environmental impacts.
 
 ## References
 

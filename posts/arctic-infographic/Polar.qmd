@@ -1,5 +1,5 @@
 ---
-title: "Breaking the Ice: Arctic Warming"
+title: "Visualizing Harsh Climate Feedback Loops in the Arctic"
 author: 'Brooke Grazda'
 format: html
 editor: visual
@@ -9,7 +9,7 @@ execute:
   eval: true
 image: greenland-sea.avif
 ---
-# Ice Ice Baby
+# Breaking the Ice: Arctic Warming
   ![Arctic sea ice extent from 1800s to present](movie.gif)
 
 When given the opportunity to pick any data source to visualize in an infographic format, I knew that I wanted to do something "cool..."

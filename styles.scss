@@ -7,6 +7,7 @@
 // Frank Ruhl Libre
 @import url('https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@300..900&family=Slabo+27px&display=swap');
 //Slabo
+
 // Colors 
 
 $mint-green: #42977d;
@@ -34,14 +35,23 @@ $violet: #413C58;
 $tea-green: #BFD7B5;
 $ash-grey: #A3C4BC;
 
+$current-bg: #e0e1dd;
+$top-bar: #778da9;
+$bottom-bar: #415a77;
+$text: #0d1b2a;
+$other: #1b263b;
 
+$logo: #1f7a8c;
+
+$trying: #e1e5f2;
+$prof_blue: #bfdbf7;
 
 // quarto sass variables
-$body-bg: $parchment;
-$navbar-bg: $egg;
-$navbar-fg: $violet;
-$navbar-hl: $mint-green;
-$footer-bg: $tea-green;
+$body-bg: $ghost-white;
+$navbar-bg: $trying;
+$navbar-fg: $logo;
+$navbar-hl: $text;
+$footer-bg: $prof_blue;
 
 
 /*-- scss:rules --*/
@@ -67,7 +77,7 @@ h1, h2 {
 }
 
 .slabo-27px-regular {
-  font-family: "Slabo 27px", serif;
+  font-family: Frank Ruhl Libre, serif;
   font-weight: 400;
   font-style: normal;
 }
