@@ -1,17 +1,18 @@
 ---
-title: "Green Hydrogen Potential in the United States"
+title: "Green Hydrogen Potential"
+description: 'Hydrogen fuel cells powered by solar and wind power is a huge pathway in the transition for a low carbon society. '
 author: 'Brooke Grazda'
+date: '12-08-2024'
 format: html
 editor: visual
 execute: 
   warning: false
   message: false
   eval: true
-image: electrolysis.jpg
+image: green-hydro-turbine.jpg
 title-block-banner: true
+categories: [MEDS, Statistics, Energy, R]
 ---
-
-Hydrogen fuel cells powered by solar and wind power is a huge possibility in the transition for a low carbon society. The Biden administration invested \$7 billion in seven green hydrogen hub projects as a pathway for decarbonization and potentially reaching net zero emissions by 2050.
 
 **Background:** Electrolysis is the process in which electricity is used to split water molecules into hydrogen and oxygen. There are several potential health implications for this energy process, when powered by natural gas. This process by which steam methane reforming is used emits potent greenhouse gases.
 

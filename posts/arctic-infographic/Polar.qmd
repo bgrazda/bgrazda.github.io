@@ -1,6 +1,8 @@
 ---
 title: "Visualizing Harsh Climate Feedback Loops in the Arctic"
 author: 'Brooke Grazda'
+description: 'When given the opportunity to pick any data source to visualize in an infographic format, I knew that I wanted to do something "cool...'
+date: '03-15-25'
 format: html
 editor: visual
 execute: 
@@ -9,27 +11,31 @@ execute:
   eval: true
 image: greenland-sea.avif
 title-block-banner: true
+categories: [R, Data Viz, Affinity Designer, NOAA]
 ---
-# Breaking the Ice: Arctic Warming
-  ![Arctic sea ice extent from 1800s to present](movie.gif)
 
-When given the opportunity to pick any data source to visualize in an infographic format, I knew that I wanted to do something "cool..."
+"
 
-Puns aside, I have always been fascinated with Arctic (even before I adopted Isla, my pet Husky). Climate change is the focal point of my academic and professional interests. With that being said, I knew the findings would be alarming when I first began visualizing arctic data. The Arctic is home to so many fragile and critical ecosystems that are essential indicators of global climate health. While it was apparent to me from the getgo, I was still shocked to see such drastic changes over many years. As a former environmental educator, I wanted to aim this infographic to students or anybody that would be interested in exploring this topic.
+![Arctic sea ice extent from 1800s to present](movie.gif)
+
+
+Puns aside, I have always been fascinated with Arctic. Climate change is the focal point of my academic and professional interests. With that being said, I knew the findings would be alarming when I first began visualizing arctic data. The Arctic is home to so many fragile and critical ecosystems that are essential indicators of global climate health. While it was apparent to me from the getgo, I was still shocked to see such drastic changes over many years. As a former environmental educator, I wanted to aim this infographic to students or anybody that would be interested in exploring this topic.
 
 I began with the question: how has Arctic sea ice changed in the last 40 years? This is a very broad question, and there are likely innumerable different pathways to which this question could be answered. Using the NOAA database, I came across a zip file that had so much data on sea ice extent, going all the way back to 1980. I also found a supplementary dataset from the NSF Arctic Data Center on arctic permafrost active layer thickness. The goal of my visualization was to not only answer this question, but tell a visually pleasing, data-driven story about climate change. I was only just dipping my toes in this data, and it was just the tip of the iceberg.
 
 ## Infographic
+
 ![Infographic: Breaking the Ice - Data Visualizations on sea ice extent and permafrost active layer](sea_ice_decline_final2_info.png)
 
 ## The Process
+
 While I am no expert in arctic data, I sure did have fun making these visualizations! My dataset from NOAA came with monthly images of the arctic circle, so I turned it into a gif using the following code and attached it to the top of this blog post.
 
 It felt like a no brainer to me to make a heatmap when I saw that my dataset had daily sea ice data. Using the colorblind friendly Viridis color gradients, I wanted my plots to look as icy as possible. I selected the `Mako` option when plotting all three of my viz. Looking at the heatmap 20 years apart, it was crazy to see how much the index dropped in September, October, and November. These seasonal fluctuations became a theme in my infographic, as I tried to contextualize my other plots with the same idea. Because it wasn't clear to me what these index values meant, I used the same images in the gif to display alongside the heatmap.
 
-The line plot has yearly data showing these month to month fluctuations, in a different format than before. We can easily see that there is an ebb and flow at different parts of the year, but I wanted to know just how much reduction there was at the lowest point. Using the data from 1980, I was able to calculate that there was a 47.8% reduction in sea ice extent. That statistic was too insane to not include as an annotation! 
+The line plot has yearly data showing these month to month fluctuations, in a different format than before. We can easily see that there is an ebb and flow at different parts of the year, but I wanted to know just how much reduction there was at the lowest point. Using the data from 1980, I was able to calculate that there was a 47.8% reduction in sea ice extent. That statistic was too insane to not include as an annotation!
 
-I was really excited about including some visualization about permafrost, because it is a striking and extremely interesting issue. This is where I found the supplementary dataset from the NSF Arctic Data Center. I learned a lot about different components of permafrost, mostly the uppermost active layer. As stated in the infographic, this is the uppermost part of the permafrost that freezes and thaws throughout the year. I never even considered that there are wildfires occurring in the Arctic, although in retrospect is rather silly. With increased disturbance, the active layer thickens and creates more thaw in permafrost, allowing warmer temperatures to permeate the ground surface. I selected a stacked area chart with flipped axes to make it look iceberg and icicle-like. 
+I was really excited about including some visualization about permafrost, because it is a striking and extremely interesting issue. This is where I found the supplementary dataset from the NSF Arctic Data Center. I learned a lot about different components of permafrost, mostly the uppermost active layer. As stated in the infographic, this is the uppermost part of the permafrost that freezes and thaws throughout the year. I never even considered that there are wildfires occurring in the Arctic, although in retrospect is rather silly. With increased disturbance, the active layer thickens and creates more thaw in permafrost, allowing warmer temperatures to permeate the ground surface. I selected a stacked area chart with flipped axes to make it look iceberg and icicle-like.
 
 One of the hardest decisions to make in this exercise was choosing a typeface. There are so many options, but the AppleGothic typeface was the first one to speak to me. I began using this directly in my plots, but when I began combining all of my plots in Affinity, I needed a bolder face that could highlight certain captions. That is when I found the Apple LiGothic typeface to bolden important components of my infographic. For my themes, I removed all backgrounds so that when I transferred it to Affinity, I could have a uniform slate to work with. This included the type face, mako color scheme, and spacing throughout all plots.
 
@@ -222,4 +228,3 @@ library(gifski)
 png_files <- list.files("sea_ice_data/images", pattern = ".*png$", full.names = TRUE)
 gifski(png_files, gif_file = "animation.gif", width = 800, height = 600, delay = 1)
 ```
-

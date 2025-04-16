@@ -1,13 +1,21 @@
 ---
 title: "About"
+description: 'Wearing many hats—and making them work together'
 image: sierpe-view.jpg
 about:
   template: jolla
   image-shape: rectangle
-  image-width: 20em
+  image-width: 30em
 title-block-banner: true
 ---
-## Wearing many hats—and making them work together
+## Who am I
+
+I'm Brooke, and I am an aspiring environmental data science! My love for nature comes from my upbringing in San Diego, California. Growing up, I have always loved music, art, theatre, and being outdoors. I never imagined that I would go into such a rigorous and technical field, but here we are and loving it! 
+
+<img style="text-align: left" width="500" src="zion.jpg" alt = "Bottom of West Rim Trail at Zion National Park"/>
+<img style="text-align: right" width="500" src="carmel.jpg" alt="Ocean view from Carmel, CA"/>
+
+## My career, so far
 
 My current role is a data-meshed administrative role, where I support The 2035 Initiative's policy research through data validation and administrative correspondence. I work directly under Dr. Leah Stokes, and am looking to pursue a professional career in data analysis.
 
@@ -16,6 +24,7 @@ I am committed to solve environmental problems through data driven solutions. I 
 Prior to my graduate degree, I was an environmental educator for a nonprofit in San Diego, delivering presentations and assemblies to students of all ages. These presentations covered topics such as watershed pollution prevention, the role of sea otters within kelp forest ecosystems, food waste, and household hazardous waste. Here, I resonated deeply with their mission of waste reduction, outreach, and environmental protection.
 
 During my undergrad, I worked at the Institute for Energy Efficiency (IEE) at UCSB as an administrative and marketing student assistant. At IEE, I became fascinated by all the different applications of STEM research to increase energy efficiency. The importance of science communication in combating the climate crisis stood out to me significantly. I was curious to figure out ways to bridge the gap between technical science jargon and the general public's understanding of environmental solutions. In almost every instance, data science seemed to be my answer.
+
 ## What inspires me
 
 Nature, community, and collaboration. I possess a growth mindset to develop practical solutions through a unique approach of combining data analysis and science communication with developing interpersonal relationships. I believe in reaching beyond barriers and connection to foster productive learning environments. My vision is to collaborate with stakeholders to create equitable solutions necessary to increase equitable access to our most basic needs using data driven strategies.

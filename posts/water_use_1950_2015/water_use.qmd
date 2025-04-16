@@ -4,6 +4,7 @@ author: "Brooke Grazda"
 date: "2023-11-15"
 output: html_document
 image: water_use.jpg
+categories: [USGS, water, R]
 ---
  
 The United States Geological Survey (USGS) has reported daily water use since as early as the 1950s. There is a plethora of knowledge that you are able to extract in each of these databases, indubitably. For this case study, I will examine daily freshwater withdrawal trends across sector, state, and source.

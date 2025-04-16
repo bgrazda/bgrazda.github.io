@@ -21,5 +21,7 @@ about:
 
 Hi! My name is Brooke Grazda. I am a San Diego native currently based in Santa Barbara, California. I'm an environmental data scientist passionate about leveraging programming tools to support smarter, data-driven decisions in energy and water efficiency. Stay for a while!
 
-I am currently a Masters of Environmental Data Science student at the Bren School of Environmental Science & Management. Previously, I graduated from UC Santa Barbara (UCSB) with a Bachelor of Arts in Environmental Studies and a minor in Applied Psychology. Feel free to explore my website to learn a little more about my professional and academic work.
+I am currently a Masters of Environmental Data Science student at the Bren School of Environmental Science & Management graduating in *June 2025*. Previously, I graduated from UC Santa Barbara (UCSB) with a Bachelor of Arts in Environmental Studies and a minor in Applied Psychology. My education gives me a unique combination of technical and soft skills.
+
+I specialize in public speaking, science communication, and environmental problem solving using `R` and `Python`. Feel free to explore my website to learn a little more about me and my work!
 
