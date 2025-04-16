@@ -1,0 +1,37 @@
+---
+title: "Lab 06"
+author: "Brooke Grazda"
+date: "2023-11-09"
+output: html_document
+---
+#### Step #1: Set global options and load packages
+```{r setup, include = FALSE, message = FALSE, warning = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(janitor)
+library(here)
+library(readxl)
+```
+
+#### Step #2: Import water use data, clean data
+**Table 1: “Sets” of data, for which each of the sets have ALL column tags in common. Data from
+USGS (1950-2015). The data for this lab are available from the [United States Geological
+Survey](https://water.usgs.gov/watuse/data/) for years 1950-2015.**
+
+| year | public supply | irrigation | rural | industrial | thermo | state |
+|:---------:|:---------:|:---------:|:---------:|:---------:|:---------:|:---------:|
+|1950-1955| ps_wgwfr + ps_wswfr | ir_wgwfr + ir_wswfr | NA | inpt_wgwfr + inpt_wswfr | NA | area |
+|1960-1980| ps_wgwfr + ps_wgwfr | ir_wgwfr + ir _wswfr | do_wgwfr + do_wswfr + ls_wgwfr + ls_wswfr | oi_wgwfr + oi_wswfr | pt_wgwfr + pt_wswfr | area |
+|1985- 1990| ps_wgwfr + ps_wswfr | ir_wgwfr + ir_wswfr | do_wgwfr + do_wswfr + ls_wgwfr + ls_wswfr | in_wgwfr + in_wswfr + mi_wgwfr + mi_wswfr | pt_wgwfr + pt_wswfr | state |
+|1995| ps_wgwfr + ps_wswfr | ir_wgwfr + ir_wswfr | do_wgwfr + do_wswfr + ls_wgwfr + ls_wswfr | in_wgwfr + in_wswfr + mi_wgwfr + mi_wswfr | pt_wgwfr + pt_wswfr | state |
+|2000| ps_wgwfr + ps_wswfr | it_wgwfr + it_wswfr | do_wgwfr + do_wswfr + ls_wgwfr + ls_wswfr | in_wgwfr + in_wswfr + mi_wgwfr + mi_wswfr | pt_wgwfr + pt_wswfr | state |
+|2005| ps_wgwfr + ps_wswfr | ir_wgwfr + ir_wswfr | do_wgwfr + do_wswfr + ls_wgwfr + l_wswfr | in_wgwfr + in_wswfr + mi_wgwfr + mi_wswfr | pt_wgwfr + pt_wswfr | state |
+|2010 - 2015|  ps_wgwfr + ps_wswfr | ir_wgwfr + ir_wswfr | do_wgwfr + do_wswfr + li_wgwfr + li_wswfr | in_wgwfr + in_wswfr + mi_wgwfr + mi_wswfr | pt_wgwfr + pt_wswfr | state |
+
+```{r, include = TRUE, warning = FALSE, message = FALSE}
+#List all files in data folder
+list.files(path = ("/Users/bgrazda/Desktop/Rprojects/water_use_1950_2015/data"))
+
+
+
+```

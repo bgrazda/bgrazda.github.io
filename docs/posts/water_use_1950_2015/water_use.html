@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.555">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Brooke Grazda">
+<meta name="dcterms.date" content="2023-11-15">
+
+<title>Brooke Grazda - Understanding yearly freshwater withdrawals in the US from 1950-2015</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../images/new_logo_04_11.png" alt="" class="navbar-logo">
+    </a>
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Brooke Grazda</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../posts.html"> 
+<span class="menu-text">Data Science Projects</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+          <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-page-left">
+      <h1 class="title">Understanding yearly freshwater withdrawals in the US from 1950-2015</h1>
+                      </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta column-page-left">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Brooke Grazda </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">November 15, 2023</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#about-the-data" id="toc-about-the-data" class="nav-link active" data-scroll-target="#about-the-data">About the data</a></li>
+  <li><a href="#reading-cleaning" id="toc-reading-cleaning" class="nav-link" data-scroll-target="#reading-cleaning">Reading &amp; Cleaning</a></li>
+  <li><a href="#organize-data-by-sector" id="toc-organize-data-by-sector" class="nav-link" data-scroll-target="#organize-data-by-sector">Organize data by sector</a></li>
+  <li><a href="#join-data-for-plotting" id="toc-join-data-for-plotting" class="nav-link" data-scroll-target="#join-data-for-plotting">Join data for plotting</a></li>
+  <li><a href="#plot-for-timeseries-of-sectoral-withdrawals" id="toc-plot-for-timeseries-of-sectoral-withdrawals" class="nav-link" data-scroll-target="#plot-for-timeseries-of-sectoral-withdrawals">Plot for timeseries of sectoral withdrawals</a></li>
+  <li><a href="#takeaways" id="toc-takeaways" class="nav-link" data-scroll-target="#takeaways">Takeaways</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block column-page-left" id="quarto-document-content">
+
+
+
+
+
+<p>The United States Geological Survey (USGS) has reported daily water use since as early as the 1950s. There is a plethora of knowledge that you are able to extract in each of these databases, indubitably. For this case study, I will examine daily freshwater withdrawal trends across sector, state, and source.</p>
+<section id="set-global-options-and-load-packages" class="level4">
+<h4 class="anchored" data-anchor-id="set-global-options-and-load-packages">Set global options and load packages</h4>
+<p>In this analysis, I used the tidyverse, janitor, here, and readxl packages.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Display Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span>opts_chunk<span class="sc">$</span><span class="fu">set</span>(<span class="at">warning =</span> <span class="cn">FALSE</span>, <span class="at">message =</span> <span class="cn">FALSE</span>) </span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(janitor)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="about-the-data" class="level3">
+<h3 class="anchored" data-anchor-id="about-the-data">About the data</h3>
+<p>These data sets contain all freshwater and saline withdrawals across sector in the United States. In order to effectively join each dataset as a dataframe, we must validate the columns using the correct metadata for each file containing 5 year data. See Table 1 for matching keys.</p>
+<p><strong>Table 1: “Sets” of data, for which each of the sets have ALL column tags in common. Data from USGS (1950-2015). The data for this project are available from the <a href="https://water.usgs.gov/watuse/data/">United States Geological Survey</a> for years 1950-2015.</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">year</th>
+<th style="text-align: center;">public supply</th>
+<th style="text-align: center;">irrigation</th>
+<th style="text-align: center;">rural</th>
+<th style="text-align: center;">industrial</th>
+<th style="text-align: center;">thermo</th>
+<th style="text-align: center;">state</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">1950-1955</td>
+<td style="text-align: center;">ps_wgw_fr + ps_wsw_fr</td>
+<td style="text-align: center;">ir_wgw_fr + ir_wsw_fr</td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">inpt_wgw_fr + inpt_wsw_fr</td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">area</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">1960-1980</td>
+<td style="text-align: center;">ps_wgw_fr + ps_wgw_fr</td>
+<td style="text-align: center;">ir_wgw_fr + ir_wsw_fr</td>
+<td style="text-align: center;">do_wgw_fr + do_wsw_fr + ls_wgw_fr + ls_wsw_fr</td>
+<td style="text-align: center;">oi_wgw_fr + oi_wsw_fr</td>
+<td style="text-align: center;">pt_wgw_fr + pt_wsw_fr</td>
+<td style="text-align: center;">area</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">1985-1990</td>
+<td style="text-align: center;">ps_wgwfr + ps_wswfr</td>
+<td style="text-align: center;">ir_wgwfr + ir_wswfr</td>
+<td style="text-align: center;">do_ssgwf + do_ssswf + ls_gwtot + ls_swtot</td>
+<td style="text-align: center;">in_wgwfr + in_wswfr + mi_wgwfr + mi_wswfr</td>
+<td style="text-align: center;">pt_wgwfr + pt_wswfr</td>
+<td style="text-align: center;">scode</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">1995</td>
+<td style="text-align: center;">ps_wgw_fr + ps_wsw_fr</td>
+<td style="text-align: center;">ir_wgw_fr + ir_wsw_fr</td>
+<td style="text-align: center;">do_wgw_fr + do_wsw_fr + ls_wgw_fr + ls_wsw_fr</td>
+<td style="text-align: center;">in_wgw_fr + in_wsw_fr + mi_wgw_fr + mi_wsw_fr</td>
+<td style="text-align: center;">pt_wgw_fr + pt_wsw_fr</td>
+<td style="text-align: center;">state_code</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">2000</td>
+<td style="text-align: center;">ps_wgw_fr + ps_wsw_fr</td>
+<td style="text-align: center;">it_wgw_fr + it_wsw_fr</td>
+<td style="text-align: center;">do_wgw_fr + do_wsw_fr + ls_wgw_fr + ls_wsw_fr</td>
+<td style="text-align: center;">in_wgw_fr + in_wsw_fr + mi_wgw_fr + mi_wsw_fr</td>
+<td style="text-align: center;">pt_wgw_fr + pt_wsw_fr</td>
+<td style="text-align: center;">statefips</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">2005</td>
+<td style="text-align: center;">ps_wgw_fr + ps_wsw_fr</td>
+<td style="text-align: center;">ir_wgw_fr + ir_wsw_fr</td>
+<td style="text-align: center;">do_wgw_fr + do_wsw_fr + ls_wgw_fr + ls_wsw_fr</td>
+<td style="text-align: center;">in_wgw_fr + in_wsw_fr + mi_wgw_fr + mi_wsw_fr</td>
+<td style="text-align: center;">pt_wgw_fr + pt_wsw_fr</td>
+<td style="text-align: center;">state_fips</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">2010 - 2015</td>
+<td style="text-align: center;">ps_wgw_fr + ps_wsw_fr</td>
+<td style="text-align: center;">ir_wgw_fr + ir_wsw_fr</td>
+<td style="text-align: center;">do_wgw_fr + do_wsw_fr + li_wgw_fr + li_wsw_fr</td>
+<td style="text-align: center;">in_wgw_fr + in_wsw_fr + mi_wgw_fr + mi_wsw_fr</td>
+<td style="text-align: center;">pt_wgw_fr + pt_wsw_fr</td>
+<td style="text-align: center;">statefips</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="reading-cleaning" class="level3">
+<h3 class="anchored" data-anchor-id="reading-cleaning">Reading &amp; Cleaning</h3>
+<p>For this step, you will see that I use <code>lapply()</code> repeatedly for each file that I want to read in as a dataframe. I am able to call the file path using `here()’, looping through each sheet and skipping the first 3 rows for most of the datasheets. See code below to see where there are discrepancies to the file convention. This is how we begin to fix messy data! ☺</p>
+<p>Following this, I reduce each sheet to one data frame, joining by <code>Area</code>. Now we are in business. Now that each of our dataframes are formatted the same, I can mutate each of the withdrawal columns to be numeric for calculations and viz later down the road.</p>
+</section>
+<section id="organize-data-by-sector" class="level3">
+<h3 class="anchored" data-anchor-id="organize-data-by-sector">Organize data by sector</h3>
+<p>Great! Each of our dataframes have the correct data type for the columns of interest, however, our column names are all over the place. As seen in <em>Table 1,</em> the naming conventions for our sector measurements has not been reproducible for every year since 1950. Using the predetermined keys from the metadata, we can mutate the columns for each sector that withdraws freshwater, removing NAs as we go. I selected every 5th year to visualize incremental trends. Last step here is to pivot longer. Now our data is happily tidy!</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Display Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#assign new variables</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>wu_1950 <span class="ot">&lt;-</span> d_1950 <span class="sc">|&gt;</span>                                        <span class="co">#calls the year 1950</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>           <span class="fu">select</span>(<span class="st">"area"</span>, <span class="fu">contains</span>(<span class="fu">c</span>(<span class="st">"wsw_fr"</span>, <span class="st">"wgw_fr"</span>))) <span class="sc">|&gt;</span>                        <span class="co">#copies necessary columns, excludes saline withdrawal</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>           <span class="fu">mutate</span>(<span class="at">public_supply =</span> ps_wsw_fr <span class="sc">+</span> ps_wgw_fr,                             <span class="co">#sum public supply columns</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>                    <span class="at">irrigation =</span> ir_wgw_fr <span class="sc">+</span> ir_wsw_fr,                           <span class="co">#sum irrigation columnes</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>                     <span class="at">rural =</span> <span class="cn">NA</span>,                                                  <span class="co">#sum rural columns except its NA</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>                    <span class="at">industrial =</span> inpt_wgw_fr <span class="sc">+</span> inpt_wsw_fr,                       <span class="co">#sum industrial columns</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>                     <span class="at">thermoelectric =</span> <span class="cn">NA</span>,                                        <span class="co">#thermoelectric columns except NA</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>                    <span class="at">state =</span> area, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)  <span class="sc">|&gt;</span>                                              <span class="co">#reassign area to state </span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>        <span class="fu">select</span>(<span class="st">"public_supply"</span>, <span class="st">"irrigation"</span>, <span class="st">"rural"</span>, <span class="st">"industrial"</span>, <span class="st">"thermoelectric"</span>, <span class="st">"state"</span>) <span class="sc">|&gt;</span>           <span class="co">#select only the columns i want</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>        <span class="fu">mutate</span>(<span class="at">year =</span> <span class="dv">1950</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>        <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="at">names_to =</span> <span class="st">"sector"</span>, <span class="at">values_to =</span> <span class="st">"withdrawals"</span>)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>wu_1955 <span class="ot">&lt;-</span> d_1955 <span class="sc">|&gt;</span>                                                                <span class="co">#year!</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>           <span class="fu">select</span>(<span class="st">"area"</span>, <span class="fu">contains</span>(<span class="fu">c</span>(<span class="st">"wsw_fr"</span>, <span class="st">"wgw_fr"</span>))) <span class="sc">|&gt;</span>                        <span class="co">#copies necessary columns, excludes saline withdrawal</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>           <span class="fu">mutate</span>(<span class="at">public_supply =</span> ps_wsw_fr <span class="sc">+</span> ps_wgw_fr,                             <span class="co">#sum public supply columns</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>                    <span class="at">irrigation =</span> ir_wgw_fr <span class="sc">+</span> ir_wsw_fr,                           <span class="co">#sum irrigation columnes</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>                     <span class="at">rural =</span> <span class="cn">NA</span>,                                                  <span class="co">#sum rural columns except its NA</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>                    <span class="at">industrial =</span> inpt_wgw_fr <span class="sc">+</span> inpt_wsw_fr,                       <span class="co">#sum industrial columns</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>                     <span class="at">thermoelectric =</span> <span class="cn">NA</span>,                                        <span class="co">#thermoelectric columns except NA</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>                    <span class="at">state =</span> area, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)  <span class="sc">|&gt;</span>                                              <span class="co">#reassign area to state </span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>        <span class="fu">select</span>(<span class="st">"public_supply"</span>, <span class="st">"irrigation"</span>, <span class="st">"rural"</span>, <span class="st">"industrial"</span>, <span class="st">"thermoelectric"</span>, <span class="st">"state"</span>) <span class="sc">|&gt;</span>           <span class="co">#select only the columns i want</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>        <span class="fu">mutate</span>(<span class="at">year =</span> <span class="dv">1955</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>        <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="at">names_to =</span> <span class="st">"sector"</span>, <span class="at">values_to =</span> <span class="st">"withdrawals"</span>)</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>wu_1960 <span class="ot">&lt;-</span> d_1960 <span class="sc">|&gt;</span>                                                                <span class="co">#year!</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>           <span class="fu">mutate</span>(<span class="at">public_supply =</span> ps_wsw_fr <span class="sc">+</span> ps_wgw_fr,                             <span class="co">#sum public supply columns</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>                   <span class="co">#totsl irrigation withdrawals since lack of data that was making my ggplot look funny before</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>                   <span class="at">irrigation =</span> ir_w_fr_to,                           <span class="co">#sum irrigation columnes</span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>                     <span class="at">rural =</span> do_wgw_fr <span class="sc">+</span> do_wsw_fr <span class="sc">+</span> ls_wgw_fr <span class="sc">+</span> ls_wsw_fr,                                                  <span class="co">#sum rural columns except its NA</span></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>                    <span class="at">industrial =</span> oi_wgw_fr <span class="sc">+</span> oi_wsw_fr,                       <span class="co">#sum industrial columns</span></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>                     <span class="at">thermoelectric =</span> pt_wgw_fr <span class="sc">+</span> pt_wsw_fr,                                        <span class="co">#thermoelectric columns except NA</span></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>                    <span class="at">state =</span> area, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)  <span class="sc">|&gt;</span>                                              <span class="co">#reassign area to state </span></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>        <span class="fu">select</span>(<span class="st">"public_supply"</span>, <span class="st">"irrigation"</span>, <span class="st">"rural"</span>, <span class="st">"industrial"</span>, <span class="st">"thermoelectric"</span>, <span class="st">"state"</span>) <span class="sc">|&gt;</span>           <span class="co">#select only the columns i want</span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>       <span class="fu">mutate</span>(<span class="at">year =</span> <span class="dv">1960</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>      <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="at">names_to =</span> <span class="st">"sector"</span>, <span class="at">values_to =</span> <span class="st">"withdrawals"</span>)</span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>wu_1965 <span class="ot">&lt;-</span> d_1965 <span class="sc">|&gt;</span>                                                                <span class="co">#year!</span></span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>           <span class="fu">select</span>(<span class="st">"area"</span>, <span class="fu">contains</span>(<span class="fu">c</span>(<span class="st">"wsw_fr"</span>, <span class="st">"wgw_fr"</span>))) <span class="sc">|&gt;</span>                        <span class="co">#copies necessary columns, excludes saline withdrawal</span></span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>           <span class="fu">mutate</span>(<span class="at">public_supply =</span> ps_wsw_fr <span class="sc">+</span> ps_wgw_fr,                             <span class="co">#sum public supply columns</span></span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>                    <span class="at">irrigation =</span> ir_wgw_fr <span class="sc">+</span> ir_wsw_fr,                           <span class="co">#sum irrigation columnes</span></span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>                     <span class="at">rural =</span> do_wgw_fr <span class="sc">+</span> do_wsw_fr <span class="sc">+</span> ls_wgw_fr <span class="sc">+</span> ls_wsw_fr,                                                  <span class="co">#sum rural columns except its NA</span></span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>                    <span class="at">industrial =</span> oi_wgw_fr <span class="sc">+</span> oi_wsw_fr,                       <span class="co">#sum industrial columns</span></span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>                     <span class="at">thermoelectric =</span> pt_wgw_fr <span class="sc">+</span> pt_wsw_fr,                                        <span class="co">#thermoelectric columns </span></span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>                    <span class="at">state =</span> area, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)  <span class="sc">|&gt;</span>                                              <span class="co">#reassign area to state </span></span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>          <span class="fu">select</span>(<span class="st">"public_supply"</span>, <span class="st">"irrigation"</span>, <span class="st">"rural"</span>, <span class="st">"industrial"</span>, <span class="st">"thermoelectric"</span>, <span class="st">"state"</span>) <span class="sc">|&gt;</span>            <span class="co">#select only the columns i want</span></span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>          <span class="fu">mutate</span>(<span class="at">year =</span> <span class="dv">1965</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>          <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="at">names_to =</span> <span class="st">"sector"</span>, <span class="at">values_to =</span> <span class="st">"withdrawals"</span>)</span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a>wu_1970 <span class="ot">&lt;-</span> d_1970 <span class="sc">|&gt;</span>                                                                <span class="co">#year!</span></span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a>           <span class="fu">select</span>(<span class="st">"area"</span>, <span class="fu">contains</span>(<span class="fu">c</span>(<span class="st">"wsw_fr"</span>, <span class="st">"wgw_fr"</span>))) <span class="sc">|&gt;</span>                        <span class="co">#copies necessary columns, excludes saline withdrawal</span></span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a>           <span class="fu">mutate</span>(<span class="at">public_supply =</span> ps_wsw_fr <span class="sc">+</span> ps_wgw_fr,                             <span class="co">#sum public supply columns</span></span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a>                    <span class="at">irrigation =</span> ir_wgw_fr <span class="sc">+</span> ir_wsw_fr,                           <span class="co">#sum irrigation columnes</span></span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a>                     <span class="at">rural =</span> do_wgw_fr <span class="sc">+</span> do_wsw_fr <span class="sc">+</span> ls_wgw_fr <span class="sc">+</span> ls_wsw_fr,                                                  <span class="co">#sum rural columns </span></span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>                    <span class="at">industrial =</span> oi_wgw_fr <span class="sc">+</span> oi_wsw_fr,                       <span class="co">#sum industrial columns</span></span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a>                     <span class="at">thermoelectric =</span> pt_wgw_fr <span class="sc">+</span> pt_wsw_fr,                                        <span class="co">#thermoelectric columns </span></span>
+<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a>                    <span class="at">state =</span> area, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)  <span class="sc">|&gt;</span>                                              <span class="co">#reassign area to state </span></span>
+<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a>          <span class="fu">select</span>(<span class="st">"public_supply"</span>, <span class="st">"irrigation"</span>, <span class="st">"rural"</span>, <span class="st">"industrial"</span>, <span class="st">"thermoelectric"</span>, <span class="st">"state"</span>) <span class="sc">|&gt;</span>           <span class="co">#select only the columns i want</span></span>
+<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a>         <span class="fu">mutate</span>(<span class="at">year =</span> <span class="dv">1970</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a>         <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="at">names_to =</span> <span class="st">"sector"</span>, <span class="at">values_to =</span> <span class="st">"withdrawals"</span>)</span>
+<span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-62"><a href="#cb2-62" aria-hidden="true" tabindex="-1"></a>wu_1975 <span class="ot">&lt;-</span> d_1975 <span class="sc">|&gt;</span>                                                                <span class="co">#year!</span></span>
+<span id="cb2-63"><a href="#cb2-63" aria-hidden="true" tabindex="-1"></a>           <span class="fu">select</span>(<span class="st">"area"</span>, <span class="fu">contains</span>(<span class="fu">c</span>(<span class="st">"wsw_fr"</span>, <span class="st">"wgw_fr"</span>))) <span class="sc">|&gt;</span>                        <span class="co">#copies necessary columns, excludes saline withdrawal</span></span>
+<span id="cb2-64"><a href="#cb2-64" aria-hidden="true" tabindex="-1"></a>           <span class="fu">mutate</span>(<span class="at">public_supply =</span> ps_wsw_fr <span class="sc">+</span> ps_wgw_fr,                             <span class="co">#sum public supply columns</span></span>
+<span id="cb2-65"><a href="#cb2-65" aria-hidden="true" tabindex="-1"></a>                    <span class="at">irrigation =</span> ir_wgw_fr <span class="sc">+</span> ir_wsw_fr,                           <span class="co">#sum irrigation columnes</span></span>
+<span id="cb2-66"><a href="#cb2-66" aria-hidden="true" tabindex="-1"></a>                     <span class="at">rural =</span> do_wgw_fr <span class="sc">+</span> do_wsw_fr <span class="sc">+</span> ls_wgw_fr <span class="sc">+</span> ls_wsw_fr,                                                  <span class="co">#sum rural columns </span></span>
+<span id="cb2-67"><a href="#cb2-67" aria-hidden="true" tabindex="-1"></a>                    <span class="at">industrial =</span> oi_wgw_fr <span class="sc">+</span> oi_wsw_fr,                       <span class="co">#sum industrial columns</span></span>
+<span id="cb2-68"><a href="#cb2-68" aria-hidden="true" tabindex="-1"></a>                     <span class="at">thermoelectric =</span> pt_wgw_fr <span class="sc">+</span> pt_wsw_fr,                                        <span class="co">#thermoelectric columns </span></span>
+<span id="cb2-69"><a href="#cb2-69" aria-hidden="true" tabindex="-1"></a>                    <span class="at">state =</span> area, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)  <span class="sc">|&gt;</span>                                              <span class="co">#reassign area to state </span></span>
+<span id="cb2-70"><a href="#cb2-70" aria-hidden="true" tabindex="-1"></a>          <span class="fu">select</span>(<span class="st">"public_supply"</span>, <span class="st">"irrigation"</span>, <span class="st">"rural"</span>, <span class="st">"industrial"</span>, <span class="st">"thermoelectric"</span>, <span class="st">"state"</span>) <span class="sc">|&gt;</span>           <span class="co">#select only the columns i want</span></span>
+<span id="cb2-71"><a href="#cb2-71" aria-hidden="true" tabindex="-1"></a>          <span class="fu">mutate</span>(<span class="at">year =</span> <span class="dv">1975</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb2-72"><a href="#cb2-72" aria-hidden="true" tabindex="-1"></a>          <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="at">names_to =</span> <span class="st">"sector"</span>, <span class="at">values_to =</span> <span class="st">"withdrawals"</span>)</span>
+<span id="cb2-73"><a href="#cb2-73" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-74"><a href="#cb2-74" aria-hidden="true" tabindex="-1"></a>wu_1980 <span class="ot">&lt;-</span> d_1980 <span class="sc">|&gt;</span>                                                                <span class="co">#year!</span></span>
+<span id="cb2-75"><a href="#cb2-75" aria-hidden="true" tabindex="-1"></a>           <span class="fu">select</span>(<span class="st">"area"</span>, <span class="fu">contains</span>(<span class="fu">c</span>(<span class="st">"wsw_fr"</span>, <span class="st">"wgw_fr"</span>))) <span class="sc">|&gt;</span>                        <span class="co">#copies necessary columns, excludes saline withdrawal</span></span>
+<span id="cb2-76"><a href="#cb2-76" aria-hidden="true" tabindex="-1"></a>           <span class="fu">mutate</span>(<span class="at">public_supply =</span> ps_wsw_fr <span class="sc">+</span> ps_wgw_fr,                             <span class="co">#sum public supply columns</span></span>
+<span id="cb2-77"><a href="#cb2-77" aria-hidden="true" tabindex="-1"></a>                    <span class="at">irrigation =</span> ir_wgw_fr <span class="sc">+</span> ir_wsw_fr,                           <span class="co">#sum irrigation columns</span></span>
+<span id="cb2-78"><a href="#cb2-78" aria-hidden="true" tabindex="-1"></a>                     <span class="at">rural =</span> do_wgw_fr <span class="sc">+</span> do_wsw_fr <span class="sc">+</span> ls_wgw_fr <span class="sc">+</span> ls_wsw_fr,                                                  <span class="co">#sum rural columns </span></span>
+<span id="cb2-79"><a href="#cb2-79" aria-hidden="true" tabindex="-1"></a>                    <span class="at">industrial =</span> oi_wgw_fr <span class="sc">+</span> oi_wsw_fr,                       <span class="co">#sum industrial columns</span></span>
+<span id="cb2-80"><a href="#cb2-80" aria-hidden="true" tabindex="-1"></a>                     <span class="at">thermoelectric =</span> pt_wgw_fr <span class="sc">+</span> pt_wsw_fr,                                        <span class="co">#thermoelectric columns </span></span>
+<span id="cb2-81"><a href="#cb2-81" aria-hidden="true" tabindex="-1"></a>                    <span class="at">state =</span> area, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)  <span class="sc">|&gt;</span>                                              <span class="co">#reassign area to state </span></span>
+<span id="cb2-82"><a href="#cb2-82" aria-hidden="true" tabindex="-1"></a>          <span class="fu">select</span>(<span class="st">"public_supply"</span>, <span class="st">"irrigation"</span>, <span class="st">"rural"</span>, <span class="st">"industrial"</span>, <span class="st">"thermoelectric"</span>, <span class="st">"state"</span>) <span class="sc">|&gt;</span>           <span class="co">#select only the columns i want</span></span>
+<span id="cb2-83"><a href="#cb2-83" aria-hidden="true" tabindex="-1"></a>          <span class="fu">mutate</span>(<span class="at">year =</span> <span class="dv">1980</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb2-84"><a href="#cb2-84" aria-hidden="true" tabindex="-1"></a>        <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="at">names_to =</span> <span class="st">"sector"</span>, <span class="at">values_to =</span> <span class="st">"withdrawals"</span>)</span>
+<span id="cb2-85"><a href="#cb2-85" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-86"><a href="#cb2-86" aria-hidden="true" tabindex="-1"></a>wu_1985 <span class="ot">&lt;-</span> d_1985 <span class="sc">|&gt;</span> </span>
+<span id="cb2-87"><a href="#cb2-87" aria-hidden="true" tabindex="-1"></a>           <span class="fu">select</span>(<span class="st">"scode"</span>, <span class="fu">contains</span>(<span class="fu">c</span>(<span class="st">"sw"</span>, <span class="st">"gw"</span>))) <span class="sc">|&gt;</span> </span>
+<span id="cb2-88"><a href="#cb2-88" aria-hidden="true" tabindex="-1"></a>           <span class="fu">mutate</span>(<span class="at">public_supply =</span> ps_wswfr <span class="sc">+</span> ps_wgwfr,                             <span class="co">#sum public supply columns</span></span>
+<span id="cb2-89"><a href="#cb2-89" aria-hidden="true" tabindex="-1"></a>                    <span class="at">irrigation =</span> ir_wgwfr <span class="sc">+</span> ir_wswfr,                           <span class="co">#sum irrigation columnes</span></span>
+<span id="cb2-90"><a href="#cb2-90" aria-hidden="true" tabindex="-1"></a>                     <span class="at">rural =</span> do_ssgwf <span class="sc">+</span> do_ssswf <span class="sc">+</span> ls_gwtot <span class="sc">+</span> ls_swtot,                      <span class="co">#sum rural columns</span></span>
+<span id="cb2-91"><a href="#cb2-91" aria-hidden="true" tabindex="-1"></a>                    <span class="at">industrial =</span> in_wgwfr <span class="sc">+</span> in_wswfr <span class="sc">+</span> mi_wgwfr <span class="sc">+</span> mi_wswfr,                       <span class="co">#sum industrial columns</span></span>
+<span id="cb2-92"><a href="#cb2-92" aria-hidden="true" tabindex="-1"></a>                     <span class="at">thermoelectric =</span> pt_wgwfr <span class="sc">+</span> pt_wswfr,                                        <span class="co">#thermoelectric columns </span></span>
+<span id="cb2-93"><a href="#cb2-93" aria-hidden="true" tabindex="-1"></a>                    <span class="at">state =</span> scode, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)  <span class="sc">|&gt;</span>                                              <span class="co">#reassign area to state </span></span>
+<span id="cb2-94"><a href="#cb2-94" aria-hidden="true" tabindex="-1"></a>          <span class="fu">select</span>(<span class="st">"public_supply"</span>, <span class="st">"irrigation"</span>, <span class="st">"rural"</span>, <span class="st">"industrial"</span>, <span class="st">"thermoelectric"</span>, <span class="st">"state"</span>) <span class="sc">|&gt;</span>           <span class="co">#select only the columns i want)</span></span>
+<span id="cb2-95"><a href="#cb2-95" aria-hidden="true" tabindex="-1"></a>         <span class="fu">group_by</span>(state) <span class="sc">|&gt;</span>                                                          <span class="co">#looks at state column and groups values</span></span>
+<span id="cb2-96"><a href="#cb2-96" aria-hidden="true" tabindex="-1"></a>         <span class="fu">summarize_at</span>(<span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>), sum) <span class="sc">|&gt;</span>                                                <span class="co">#sum up the states</span></span>
+<span id="cb2-97"><a href="#cb2-97" aria-hidden="true" tabindex="-1"></a>         <span class="fu">ungroup</span>()      <span class="sc">|&gt;</span>                                                              <span class="co">#ungroups to prevent errors</span></span>
+<span id="cb2-98"><a href="#cb2-98" aria-hidden="true" tabindex="-1"></a>         <span class="fu">mutate</span>(<span class="at">year =</span> <span class="dv">1985</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb2-99"><a href="#cb2-99" aria-hidden="true" tabindex="-1"></a>        <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">6</span>, <span class="at">names_to =</span> <span class="st">"sector"</span>, <span class="at">values_to =</span> <span class="st">"withdrawals"</span>)</span>
+<span id="cb2-100"><a href="#cb2-100" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-101"><a href="#cb2-101" aria-hidden="true" tabindex="-1"></a>wu_1990 <span class="ot">&lt;-</span> d_1990 <span class="sc">|&gt;</span> </span>
+<span id="cb2-102"><a href="#cb2-102" aria-hidden="true" tabindex="-1"></a>          <span class="fu">select</span>(<span class="st">"scode"</span>, <span class="fu">contains</span>(<span class="fu">c</span>(<span class="st">"sw"</span>, <span class="st">"gw"</span>))) <span class="sc">|&gt;</span> </span>
+<span id="cb2-103"><a href="#cb2-103" aria-hidden="true" tabindex="-1"></a>           <span class="fu">mutate</span>(<span class="at">public_supply =</span> ps_wswfr <span class="sc">+</span> ps_wgwfr,                                <span class="co">#sum public supply columns</span></span>
+<span id="cb2-104"><a href="#cb2-104" aria-hidden="true" tabindex="-1"></a>                    <span class="at">irrigation =</span> ir_wgwfr <span class="sc">+</span> ir_wswfr,                                 <span class="co">#sum irrigation columnes</span></span>
+<span id="cb2-105"><a href="#cb2-105" aria-hidden="true" tabindex="-1"></a>                     <span class="at">rural =</span> do_ssgwf <span class="sc">+</span> do_ssswf <span class="sc">+</span> ls_gwtot <span class="sc">+</span> ls_swtot,                                                  <span class="co">#sum rural columns </span></span>
+<span id="cb2-106"><a href="#cb2-106" aria-hidden="true" tabindex="-1"></a>                    <span class="at">industrial =</span> in_wgwfr <span class="sc">+</span> in_wswfr <span class="sc">+</span> mi_wgwfr <span class="sc">+</span> mi_wswfr,                       <span class="co">#sum industrial columns</span></span>
+<span id="cb2-107"><a href="#cb2-107" aria-hidden="true" tabindex="-1"></a>                     <span class="at">thermoelectric =</span> pt_wgwfr <span class="sc">+</span> pt_wswfr,                                        <span class="co">#thermoelectric columns </span></span>
+<span id="cb2-108"><a href="#cb2-108" aria-hidden="true" tabindex="-1"></a>                    <span class="at">state =</span> scode, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)  <span class="sc">|&gt;</span>                                                <span class="co">#reassign area to state </span></span>
+<span id="cb2-109"><a href="#cb2-109" aria-hidden="true" tabindex="-1"></a>          <span class="fu">select</span>(<span class="st">"public_supply"</span>, <span class="st">"irrigation"</span>, <span class="st">"rural"</span>, <span class="st">"industrial"</span>, <span class="st">"thermoelectric"</span>, <span class="st">"state"</span>) <span class="sc">|&gt;</span>        <span class="co">#only wanted values</span></span>
+<span id="cb2-110"><a href="#cb2-110" aria-hidden="true" tabindex="-1"></a>         <span class="fu">group_by</span>(state) <span class="sc">|&gt;</span>                                                          <span class="co">#looks at state column and groups values</span></span>
+<span id="cb2-111"><a href="#cb2-111" aria-hidden="true" tabindex="-1"></a>         <span class="fu">summarize_at</span>(<span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>), sum) <span class="sc">|&gt;</span>                                                <span class="co">#sum up the states</span></span>
+<span id="cb2-112"><a href="#cb2-112" aria-hidden="true" tabindex="-1"></a>         <span class="fu">ungroup</span>()  <span class="sc">|&gt;</span>                                                                  <span class="co">#ungroups to prevent errors</span></span>
+<span id="cb2-113"><a href="#cb2-113" aria-hidden="true" tabindex="-1"></a>       <span class="fu">mutate</span>(<span class="at">year =</span> <span class="dv">1990</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb2-114"><a href="#cb2-114" aria-hidden="true" tabindex="-1"></a>       <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">6</span>, <span class="at">names_to =</span> <span class="st">"sector"</span>, <span class="at">values_to =</span> <span class="st">"withdrawals"</span>)</span>
+<span id="cb2-115"><a href="#cb2-115" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-116"><a href="#cb2-116" aria-hidden="true" tabindex="-1"></a>wu_1995 <span class="ot">&lt;-</span> d_1995 <span class="sc">|&gt;</span> </span>
+<span id="cb2-117"><a href="#cb2-117" aria-hidden="true" tabindex="-1"></a>           <span class="fu">select</span>(<span class="st">"state_code"</span>, <span class="fu">contains</span>(<span class="fu">c</span>(<span class="st">"wgw_fr"</span>, <span class="st">"wsw_fr"</span>)))  <span class="sc">|&gt;</span> </span>
+<span id="cb2-118"><a href="#cb2-118" aria-hidden="true" tabindex="-1"></a>          <span class="fu">mutate</span>(<span class="at">public_supply =</span> ps_wsw_fr <span class="sc">+</span> ps_wgw_fr,                                <span class="co">#sum public supply columns</span></span>
+<span id="cb2-119"><a href="#cb2-119" aria-hidden="true" tabindex="-1"></a>                    <span class="at">irrigation =</span> ir_wgw_fr <span class="sc">+</span> ir_wsw_fr,                                 <span class="co">#sum irrigation columnes</span></span>
+<span id="cb2-120"><a href="#cb2-120" aria-hidden="true" tabindex="-1"></a>                     <span class="at">rural =</span> do_wgw_fr <span class="sc">+</span> do_wsw_fr <span class="sc">+</span> ls_wgw_fr <span class="sc">+</span> ls_wsw_fr,                                                  <span class="co">#sum rural columns </span></span>
+<span id="cb2-121"><a href="#cb2-121" aria-hidden="true" tabindex="-1"></a>                    <span class="at">industrial =</span> in_wgw_fr <span class="sc">+</span> in_wsw_fr <span class="sc">+</span> mi_wgw_fr <span class="sc">+</span> mi_wsw_fr,                       <span class="co">#sum industrial columns</span></span>
+<span id="cb2-122"><a href="#cb2-122" aria-hidden="true" tabindex="-1"></a>                     <span class="at">thermoelectric =</span> pt_wgw_fr <span class="sc">+</span> pt_wsw_fr,                                        <span class="co">#thermoelectric columns</span></span>
+<span id="cb2-123"><a href="#cb2-123" aria-hidden="true" tabindex="-1"></a>                    <span class="at">state =</span> state_code, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb2-124"><a href="#cb2-124" aria-hidden="true" tabindex="-1"></a>         <span class="fu">select</span>(<span class="st">"public_supply"</span>, <span class="st">"irrigation"</span>, <span class="st">"rural"</span>, <span class="st">"industrial"</span>, <span class="st">"thermoelectric"</span>, <span class="st">"state"</span>) <span class="sc">|&gt;</span>        <span class="co">#only wanted values</span></span>
+<span id="cb2-125"><a href="#cb2-125" aria-hidden="true" tabindex="-1"></a>         <span class="fu">group_by</span>(state) <span class="sc">|&gt;</span>                                                          <span class="co">#looks at state column and groups values</span></span>
+<span id="cb2-126"><a href="#cb2-126" aria-hidden="true" tabindex="-1"></a>         <span class="fu">summarize_at</span>(<span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>), sum) <span class="sc">|&gt;</span>                                                <span class="co">#sum up the states</span></span>
+<span id="cb2-127"><a href="#cb2-127" aria-hidden="true" tabindex="-1"></a>         <span class="fu">ungroup</span>() <span class="sc">|&gt;</span>                                                                <span class="co">#no errors here no sir</span></span>
+<span id="cb2-128"><a href="#cb2-128" aria-hidden="true" tabindex="-1"></a>         <span class="fu">mutate</span>(<span class="at">year =</span> <span class="dv">1995</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb2-129"><a href="#cb2-129" aria-hidden="true" tabindex="-1"></a>        <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">6</span>, <span class="at">names_to =</span> <span class="st">"sector"</span>, <span class="at">values_to =</span> <span class="st">"withdrawals"</span>)</span>
+<span id="cb2-130"><a href="#cb2-130" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-131"><a href="#cb2-131" aria-hidden="true" tabindex="-1"></a>wu_2000 <span class="ot">&lt;-</span> d_2000 <span class="sc">|&gt;</span> </span>
+<span id="cb2-132"><a href="#cb2-132" aria-hidden="true" tabindex="-1"></a>           <span class="fu">select</span>(statefips, <span class="fu">contains</span>(<span class="fu">c</span>(<span class="st">"wgw_fr"</span>, <span class="st">"wsw_fr"</span>))) <span class="sc">|&gt;</span>                                              <span class="co">#select these ones to narrow down</span></span>
+<span id="cb2-133"><a href="#cb2-133" aria-hidden="true" tabindex="-1"></a>           <span class="fu">mutate</span>(<span class="at">public_supply =</span> ps_wgw_fr <span class="sc">+</span> ps_wsw_fr,                                             <span class="co">#public supply sum column</span></span>
+<span id="cb2-134"><a href="#cb2-134" aria-hidden="true" tabindex="-1"></a>                  <span class="at">irrigation =</span> it_wgw_fr <span class="sc">+</span> it_wsw_fr,                                              <span class="co">#irrigation summing columns</span></span>
+<span id="cb2-135"><a href="#cb2-135" aria-hidden="true" tabindex="-1"></a>                  <span class="at">rural =</span> do_wgw_fr <span class="sc">+</span> do_wsw_fr <span class="sc">+</span> ls_wgw_fr <span class="sc">+</span> ls_wsw_fr,                                              <span class="co">#rural summing col</span></span>
+<span id="cb2-136"><a href="#cb2-136" aria-hidden="true" tabindex="-1"></a>                  <span class="at">industrial =</span> in_wgw_fr <span class="sc">+</span> in_wsw_fr <span class="sc">+</span> mi_wgw_fr <span class="sc">+</span> mi_wsw_fr,                                             <span class="co">#industrial sum col</span></span>
+<span id="cb2-137"><a href="#cb2-137" aria-hidden="true" tabindex="-1"></a>                  <span class="at">thermoelectric =</span> pt_wgw_fr <span class="sc">+</span> pt_wsw_fr,                                             <span class="co">#thermoelectric sum col</span></span>
+<span id="cb2-138"><a href="#cb2-138" aria-hidden="true" tabindex="-1"></a>                  <span class="at">state =</span> statefips, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)  <span class="sc">|&gt;</span>                                                         <span class="co">#state code is fips </span></span>
+<span id="cb2-139"><a href="#cb2-139" aria-hidden="true" tabindex="-1"></a>          <span class="fu">select</span>(<span class="st">"public_supply"</span>, <span class="st">"irrigation"</span>, <span class="st">"rural"</span>, <span class="st">"industrial"</span>, <span class="st">"thermoelectric"</span>, <span class="st">"state"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb2-140"><a href="#cb2-140" aria-hidden="true" tabindex="-1"></a>          <span class="fu">group_by</span>(state) <span class="sc">|&gt;</span>                                                                       <span class="co">#group states</span></span>
+<span id="cb2-141"><a href="#cb2-141" aria-hidden="true" tabindex="-1"></a>        <span class="fu">summarize_at</span>(<span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>), sum) <span class="sc">|&gt;</span>                                                                       <span class="co">#selected columns </span></span>
+<span id="cb2-142"><a href="#cb2-142" aria-hidden="true" tabindex="-1"></a>         <span class="fu">ungroup</span>() <span class="sc">|&gt;</span>                                                                             <span class="co">#ungroup</span></span>
+<span id="cb2-143"><a href="#cb2-143" aria-hidden="true" tabindex="-1"></a>         <span class="fu">mutate</span>(<span class="at">year =</span> <span class="dv">2000</span>) <span class="sc">|&gt;</span>                                                                       <span class="co">#add column for 2000</span></span>
+<span id="cb2-144"><a href="#cb2-144" aria-hidden="true" tabindex="-1"></a>        <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">6</span>, <span class="at">names_to =</span> <span class="st">"sector"</span>, <span class="at">values_to =</span> <span class="st">"withdrawals"</span>)                                   <span class="co">#now only 4 columns</span></span>
+<span id="cb2-145"><a href="#cb2-145" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-146"><a href="#cb2-146" aria-hidden="true" tabindex="-1"></a>wu_2005 <span class="ot">&lt;-</span> d_2005 <span class="sc">|&gt;</span>                                                                       <span class="co">#year of interest</span></span>
+<span id="cb2-147"><a href="#cb2-147" aria-hidden="true" tabindex="-1"></a>          <span class="fu">select</span>(statefips, <span class="fu">contains</span>(<span class="fu">c</span>(<span class="st">"wgw_fr"</span>, <span class="st">"wsw_fr"</span>))) <span class="sc">|&gt;</span>                                   <span class="co">#help search for wanted variables</span></span>
+<span id="cb2-148"><a href="#cb2-148" aria-hidden="true" tabindex="-1"></a>          <span class="fu">mutate</span>(<span class="at">public_supply =</span> ps_wgw_fr <span class="sc">+</span> ps_wsw_fr,                                   <span class="co">#sum up</span></span>
+<span id="cb2-149"><a href="#cb2-149" aria-hidden="true" tabindex="-1"></a>                 <span class="at">irrigation =</span> ir_wgw_fr <span class="sc">+</span> ir_wsw_fr,                                   <span class="co">#irrigationsum</span></span>
+<span id="cb2-150"><a href="#cb2-150" aria-hidden="true" tabindex="-1"></a>                 <span class="at">rural =</span> do_wgw_fr <span class="sc">+</span> do_wsw_fr <span class="sc">+</span> ls_wgw_fr <span class="sc">+</span> ls_wsw_fr,                                   <span class="co">#rural sum</span></span>
+<span id="cb2-151"><a href="#cb2-151" aria-hidden="true" tabindex="-1"></a>                 <span class="at">industrial =</span> in_wgw_fr <span class="sc">+</span> in_wsw_fr <span class="sc">+</span> mi_wgw_fr <span class="sc">+</span> mi_wsw_fr,                                   <span class="co">#industrial sum</span></span>
+<span id="cb2-152"><a href="#cb2-152" aria-hidden="true" tabindex="-1"></a>                 <span class="at">thermoelectric =</span> pt_wgw_fr <span class="sc">+</span> pt_wsw_fr,                                                 <span class="co">#thermo sum</span></span>
+<span id="cb2-153"><a href="#cb2-153" aria-hidden="true" tabindex="-1"></a>                 <span class="at">state =</span> statefips, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)  <span class="sc">|&gt;</span>                                    <span class="co">#state fips char and then ALL values na.rm = true </span></span>
+<span id="cb2-154"><a href="#cb2-154" aria-hidden="true" tabindex="-1"></a>        <span class="fu">select</span>(<span class="st">"public_supply"</span>, <span class="st">"irrigation"</span>, <span class="st">"rural"</span>, <span class="st">"industrial"</span>, <span class="st">"thermoelectric"</span>, <span class="st">"state"</span>) <span class="sc">|&gt;</span>                                    <span class="co">#only want these</span></span>
+<span id="cb2-155"><a href="#cb2-155" aria-hidden="true" tabindex="-1"></a>        <span class="fu">group_by</span>(state) <span class="sc">|&gt;</span>                                                                     </span>
+<span id="cb2-156"><a href="#cb2-156" aria-hidden="true" tabindex="-1"></a>        <span class="fu">summarize_at</span>(<span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>), sum) <span class="sc">|&gt;</span> </span>
+<span id="cb2-157"><a href="#cb2-157" aria-hidden="true" tabindex="-1"></a>        <span class="fu">ungroup</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb2-158"><a href="#cb2-158" aria-hidden="true" tabindex="-1"></a>        <span class="fu">mutate</span>(<span class="at">year =</span> <span class="dv">2005</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb2-159"><a href="#cb2-159" aria-hidden="true" tabindex="-1"></a>        <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">6</span>, <span class="at">names_to =</span> <span class="st">"sector"</span>, <span class="at">values_to =</span> <span class="st">"withdrawals"</span>)         <span class="co">#same deal group sum then ungroup and add column to get 4 total</span></span>
+<span id="cb2-160"><a href="#cb2-160" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-161"><a href="#cb2-161" aria-hidden="true" tabindex="-1"></a>wu_2010 <span class="ot">&lt;-</span> d_2010 <span class="sc">|&gt;</span> </span>
+<span id="cb2-162"><a href="#cb2-162" aria-hidden="true" tabindex="-1"></a>         <span class="fu">select</span>(statefips, <span class="fu">contains</span>(<span class="fu">c</span>(<span class="st">"wgw_fr"</span>, <span class="st">"wsw_fr"</span>))) <span class="sc">|&gt;</span> </span>
+<span id="cb2-163"><a href="#cb2-163" aria-hidden="true" tabindex="-1"></a>          <span class="fu">mutate</span>(<span class="at">public_supply =</span> ps_wgw_fr <span class="sc">+</span> ps_wsw_fr,</span>
+<span id="cb2-164"><a href="#cb2-164" aria-hidden="true" tabindex="-1"></a>                 <span class="at">irrigation =</span> ir_wgw_fr <span class="sc">+</span> ir_wsw_fr,</span>
+<span id="cb2-165"><a href="#cb2-165" aria-hidden="true" tabindex="-1"></a>                 <span class="at">rural =</span> do_wgw_fr <span class="sc">+</span> do_wsw_fr <span class="sc">+</span> li_wgw_fr <span class="sc">+</span> li_wsw_fr,</span>
+<span id="cb2-166"><a href="#cb2-166" aria-hidden="true" tabindex="-1"></a>                 <span class="at">industrial =</span> in_wgw_fr <span class="sc">+</span> in_wsw_fr <span class="sc">+</span> mi_wgw_fr <span class="sc">+</span> mi_wsw_fr,</span>
+<span id="cb2-167"><a href="#cb2-167" aria-hidden="true" tabindex="-1"></a>                 <span class="at">thermoelectric =</span> pt_wgw_fr <span class="sc">+</span> pt_wsw_fr,</span>
+<span id="cb2-168"><a href="#cb2-168" aria-hidden="true" tabindex="-1"></a>                 <span class="at">state =</span> statefips, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)  <span class="sc">|&gt;</span> </span>
+<span id="cb2-169"><a href="#cb2-169" aria-hidden="true" tabindex="-1"></a>        <span class="fu">select</span>(<span class="st">"public_supply"</span>, <span class="st">"irrigation"</span>, <span class="st">"rural"</span>, <span class="st">"industrial"</span>, <span class="st">"thermoelectric"</span>, <span class="st">"state"</span>) <span class="sc">|&gt;</span>      <span class="co">#after summing up correct columns, select them to get only these </span></span>
+<span id="cb2-170"><a href="#cb2-170" aria-hidden="true" tabindex="-1"></a>        <span class="fu">group_by</span>(state) <span class="sc">|&gt;</span> </span>
+<span id="cb2-171"><a href="#cb2-171" aria-hidden="true" tabindex="-1"></a>        <span class="fu">summarize_at</span>(<span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>), sum) <span class="sc">|&gt;</span> </span>
+<span id="cb2-172"><a href="#cb2-172" aria-hidden="true" tabindex="-1"></a>        <span class="fu">ungroup</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb2-173"><a href="#cb2-173" aria-hidden="true" tabindex="-1"></a>        <span class="fu">mutate</span>(<span class="at">year =</span> <span class="dv">2010</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb2-174"><a href="#cb2-174" aria-hidden="true" tabindex="-1"></a>        <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">6</span>, <span class="at">names_to =</span> <span class="st">"sector"</span>, <span class="at">values_to =</span> <span class="st">"withdrawals"</span>)   <span class="co">#same deal group sum then ungroup and add column to get 4 total</span></span>
+<span id="cb2-175"><a href="#cb2-175" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-176"><a href="#cb2-176" aria-hidden="true" tabindex="-1"></a>wu_2015 <span class="ot">&lt;-</span> d_2015 <span class="sc">|&gt;</span> </span>
+<span id="cb2-177"><a href="#cb2-177" aria-hidden="true" tabindex="-1"></a>         <span class="fu">select</span>(statefips, <span class="fu">contains</span>(<span class="fu">c</span>(<span class="st">"wgw_fr"</span>, <span class="st">"wsw_fr"</span>))) <span class="sc">|&gt;</span> </span>
+<span id="cb2-178"><a href="#cb2-178" aria-hidden="true" tabindex="-1"></a>          <span class="fu">mutate</span>(<span class="at">public_supply =</span> ps_wgw_fr <span class="sc">+</span> ps_wsw_fr,</span>
+<span id="cb2-179"><a href="#cb2-179" aria-hidden="true" tabindex="-1"></a>                 <span class="at">irrigation =</span> ir_wgw_fr <span class="sc">+</span> ir_wsw_fr,</span>
+<span id="cb2-180"><a href="#cb2-180" aria-hidden="true" tabindex="-1"></a>                 <span class="at">rural =</span> do_wgw_fr <span class="sc">+</span> do_wsw_fr <span class="sc">+</span> li_wgw_fr <span class="sc">+</span> li_wsw_fr,</span>
+<span id="cb2-181"><a href="#cb2-181" aria-hidden="true" tabindex="-1"></a>                 <span class="at">industrial =</span> in_wgw_fr <span class="sc">+</span> in_wsw_fr <span class="sc">+</span> mi_wgw_fr <span class="sc">+</span> mi_wsw_fr,</span>
+<span id="cb2-182"><a href="#cb2-182" aria-hidden="true" tabindex="-1"></a>                 <span class="at">thermoelectric =</span> pt_wgw_fr <span class="sc">+</span> pt_wsw_fr,</span>
+<span id="cb2-183"><a href="#cb2-183" aria-hidden="true" tabindex="-1"></a>                 <span class="at">state =</span> statefips, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)  <span class="sc">|&gt;</span> </span>
+<span id="cb2-184"><a href="#cb2-184" aria-hidden="true" tabindex="-1"></a>        <span class="fu">select</span>(<span class="st">"public_supply"</span>, <span class="st">"irrigation"</span>, <span class="st">"rural"</span>, <span class="st">"industrial"</span>, <span class="st">"thermoelectric"</span>, <span class="st">"state"</span>) <span class="sc">|&gt;</span>     <span class="co">#after summing up correct columns, select them to get only these </span></span>
+<span id="cb2-185"><a href="#cb2-185" aria-hidden="true" tabindex="-1"></a>        <span class="fu">group_by</span>(state) <span class="sc">|&gt;</span> </span>
+<span id="cb2-186"><a href="#cb2-186" aria-hidden="true" tabindex="-1"></a>        <span class="fu">summarize_at</span>(<span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>), sum) <span class="sc">|&gt;</span> </span>
+<span id="cb2-187"><a href="#cb2-187" aria-hidden="true" tabindex="-1"></a>        <span class="fu">ungroup</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb2-188"><a href="#cb2-188" aria-hidden="true" tabindex="-1"></a>        <span class="fu">mutate</span>(<span class="at">year =</span> <span class="dv">2015</span>) <span class="sc">|&gt;</span>                    <span class="co">#same deal group sum then ungroup and add column to get 4 total</span></span>
+<span id="cb2-189"><a href="#cb2-189" aria-hidden="true" tabindex="-1"></a>       <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">6</span>, <span class="at">names_to =</span> <span class="st">"sector"</span>, <span class="at">values_to =</span> <span class="st">"withdrawals"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="join-data-for-plotting" class="level3">
+<h3 class="anchored" data-anchor-id="join-data-for-plotting">Join data for plotting</h3>
+<p>Storing our water use data every 5 years gives us a lot of information, but not in the most convenient places. Luckily we just cleaned each of these data frames under the same conventions so we will be able to bind each dataframe into one mega water use dataframe using <code>rbind().</code> This analysis excludes District of Columbia, Puerto Rico, and the Virgin Islands.</p>
+<p>I was able to calculate the yearly number of withdrawals in the United States grouping different combinations of sector, sector &amp; year, and year. This will help with visualizing different insights. I arranged the water use by sector data frame to help with plotting.</p>
+</section>
+<section id="plot-for-timeseries-of-sectoral-withdrawals" class="level3">
+<h3 class="anchored" data-anchor-id="plot-for-timeseries-of-sectoral-withdrawals">Plot for timeseries of sectoral withdrawals</h3>
+<p>Using our good friend <code>ggplot()</code>, I plotted the water use data as a bar chart. This visualization seemed to make the most intuitive sense as far as showing water use by sector from 1950-2015.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Display Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>        <span class="fu">geom_col</span>(<span class="at">data =</span> wu_all_sector, <span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">y =</span> withdrawals,               <span class="co">#data frame, x axis is year, y axis is withdrawal</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">fill =</span> <span class="fu">reorder</span>(sector, withdrawals, <span class="at">decreasing =</span> <span class="cn">FALSE</span>)),          <span class="co">#we want the sector to be reordered based on increasing withdrawals</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="fl">3.5</span>),                                   <span class="co">#dodgin bars for visualization</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>                 <span class="at">width =</span> <span class="dv">4</span>) <span class="sc">+</span>                                                     <span class="co">#thickness of bars</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>        <span class="fu">scale_fill_manual</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="st">"rural"</span>, <span class="st">"public_supply"</span>, <span class="st">"industrial"</span>, <span class="st">"thermoelectric"</span>, <span class="st">"irrigation"</span>), <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Rural"</span>, <span class="st">"Public Supply"</span>, <span class="st">"Industrial"</span>, <span class="st">"Thermoelectric"</span>, <span class="st">"Irrigation"</span>), <span class="at">values =</span> <span class="fu">c</span>(<span class="st">"#5ab4ac"</span>,<span class="st">"#1f78b4"</span>, <span class="st">"#de2d26"</span>,<span class="st">"#fc8d59"</span>, <span class="st">"#31a354"</span> ))  <span class="sc">+</span>        <span class="co">#reassigns colors, gets rid of snake case legend</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>          <span class="fu">geom_line</span>(<span class="at">data =</span> wu_all_total, <span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">y=</span> withdrawals<span class="sc">/</span><span class="dv">2</span>), </span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>                    <span class="at">size =</span> <span class="dv">1</span>, </span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>                    <span class="at">colour =</span> <span class="st">"grey"</span>) <span class="sc">+</span>               <span class="co">#line data in grey</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>          <span class="fu">geom_point</span>(<span class="at">data =</span> wu_all_total, <span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">y =</span> withdrawals<span class="sc">/</span><span class="dv">2</span>), </span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>                    <span class="at">size =</span> <span class="dv">2</span>, </span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>                    <span class="at">colour =</span> <span class="st">"grey"</span>) <span class="sc">+</span>            <span class="co">#plots grey points on the line</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>                 <span class="co">#removes padding between first and last years (removes 1945 and 2020)</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>         <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> scales<span class="sc">::</span><span class="fu">pretty_breaks</span>(<span class="at">n =</span> <span class="dv">14</span>), <span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>)) <span class="sc">+</span>     <span class="co">#breaks on the x axis</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>                 <span class="co">#removes padding between the x axis and the first plotted value</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>         <span class="fu">scale_y_continuous</span>(<span class="at">breaks =</span> scales<span class="sc">::</span><span class="fu">pretty_breaks</span>(<span class="at">n =</span> <span class="dv">10</span>), <span class="at">labels =</span> scales<span class="sc">::</span>comma, <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">200000</span>), <span class="at">sec.axis =</span> <span class="fu">sec_axis</span>(<span class="at">trans =</span> <span class="sc">~</span>.<span class="sc">*</span><span class="dv">2</span>, <span class="at">breaks =</span> scales<span class="sc">::</span><span class="fu">pretty_breaks</span>(<span class="at">n =</span> <span class="dv">10</span>), <span class="at">name =</span> <span class="st">"Total Withdrawals Mgal/Day"</span>, <span class="at">labels =</span> scales<span class="sc">::</span>comma), <span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>)) <span class="sc">+</span>                       <span class="co">#sets right side secondary axis and names it with limits up to 200,000</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>          <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">" "</span>, <span class="at">y =</span> <span class="st">"Sector Withdrawals Mgal/day"</span>, <span class="at">title =</span> <span class="st">"Freshwater withdrawals in the United States from 1950-2015"</span>, <span class="at">caption =</span>  <span class="st">"Source: United States Geological Survey."</span>, <span class="at">fill =</span> <span class="st">""</span>) <span class="sc">+</span>         <span class="co">#left axes title with labeling x axis and giving caption</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>      <span class="co">#classic theme removes gridlines and gives a white background</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>         <span class="fu">theme_classic</span>() <span class="sc">+</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>         <span class="fu">theme</span>(<span class="at">legend.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">10</span>, <span class="at">color =</span> <span class="st">"black"</span>),                 <span class="co">#change legend size and color</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>                     <span class="at">legend.position =</span> <span class="st">"bottom"</span>,                                       <span class="co">#change legend position to top</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>                      <span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">10</span>, <span class="at">color =</span> <span class="st">"black"</span>),         <span class="co">#change axis text on the left and change color to black</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>                      <span class="at">axis.text.y.right =</span> <span class="fu">element_text</span>(<span class="at">color =</span> <span class="st">"grey"</span>),           <span class="co">#put right axis text to be grey</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>                      <span class="at">axis.title.y.right =</span> <span class="fu">element_text</span>(<span class="at">vjust =</span> <span class="dv">2</span>, <span class="at">color =</span> <span class="st">"grey"</span>),          <span class="co">#make right axis title grey</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>                      <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">15</span>),                     <span class="co">#change title size</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>                      <span class="at">plot.caption =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="sc">-</span><span class="fl">0.15</span>, <span class="at">size =</span> <span class="dv">16</span>, <span class="at">face =</span> <span class="st">"bold"</span>))           <span class="co">#change caption positioning and size and face</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="water_use_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Note: In this <a href="https://www.usgs.gov/special-topics/water-science-school/science/total-water-use-united-states">USGS plot</a>, thermoelectricity is shown to have the highest overall amount of freshwater withdrawals. This may be due in part to there being no indication of the type of water that is used. For example, this plot could account for both withdrawals and deliveries within the thermoelectric sector.</p>
+</section>
+<section id="takeaways" class="level3">
+<h3 class="anchored" data-anchor-id="takeaways">Takeaways</h3>
+<p>Total water withdrawals were increasing up until 1980, and then over time it has decreased. The two major sectors over time have been thermoelectric and irrigation for water withdrawals. 1980 had the greatest year of overall water consumption. Since then, we have improved water efficiency across all sectors. I was shocked to see how little the public supply sector uses water in comparison to other sectors!</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Copyright 2024, Brooke Grazda</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>This website is built with Github</p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>
