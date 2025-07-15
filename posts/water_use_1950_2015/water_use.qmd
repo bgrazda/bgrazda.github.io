@@ -47,7 +47,7 @@ These data sets contain all freshwater and saline withdrawals across sector in t
 For this step, you will see that I use `lapply()` repeatedly for each file that I want to read in as a dataframe. I am able to call the file path using `here()', looping through each sheet and skipping the first 3 rows for most of the datasheets. See code below to see where there are discrepancies to the file convention. This is how we begin to fix messy data! ☺
 
 Following this, I reduce each sheet to one data frame, joining by `Area`. Now we are in business. Now that each of our dataframes are formatted the same, I can mutate each of the withdrawal columns to be numeric for calculations and viz later down the road. 
-```{r, include = FALSE, warning = FALSE, message = FALSE}
+```{r, warning = FALSE, message = FALSE}
 #| code-fold: true
 #| code-summary: 'Display Code'
 #List all files in data folder
@@ -139,7 +139,7 @@ d_2015 <- read_xlsx(here("data/us2015.xlsx"), skip = 1) |>
 
 ### Organize data by sector
 Great! Each of our dataframes have the correct data type for the columns of interest, however, our column names are all over the place. As seen in *Table 1,* the naming conventions for our sector measurements has not been reproducible for every year since 1950. Using the predetermined keys from the metadata, we can mutate the columns for each sector that withdraws freshwater, removing NAs as we go. I selected every 5th year to visualize incremental trends. Last step here is to pivot longer. Now our data is happily tidy! 
-```{r}
+```{r, message=FALSE, warning=FALSE}
 #| code-fold: true
 #| code-summary: 'Display Code'
 #assign new variables
@@ -339,7 +339,7 @@ wu_2015 <- d_2015 |>
 Storing our water use data every 5 years gives us a lot of information, but not in the most convenient places. Luckily we just cleaned each of these data frames under the same conventions so we will be able to bind each dataframe into one mega water use dataframe using `rbind().` This analysis excludes District of Columbia, Puerto Rico, and the Virgin Islands.
 
 I was able to calculate the yearly number of withdrawals in the United States grouping different combinations of sector, sector & year, and year. This will help with visualizing different insights. I arranged the water use by sector data frame to help with plotting.
-```{r, warning=FALSE, message=FALSE, echo=FALSE}
+```{r, warning=FALSE, message=FALSE}
 #| code-fold: true
 #| code-summary: 'Display Code'
 #| quiet: TRUE
