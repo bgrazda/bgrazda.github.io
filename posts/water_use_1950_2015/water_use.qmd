@@ -342,7 +342,6 @@ I was able to calculate the yearly number of withdrawals in the United States gr
 ```{r, warning=FALSE, message=FALSE}
 #| code-fold: true
 #| code-summary: 'Display Code'
-#| quiet: TRUE
 #| warning: FALSE
 
 wu_all <- rbind(wu_1950, wu_1955, wu_1960, wu_1965, wu_1970, wu_1975, wu_1980, wu_1985,
